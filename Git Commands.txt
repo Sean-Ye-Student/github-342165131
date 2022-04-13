@@ -13,14 +13,6 @@ git remote add origin https://github.com/Sean-Ye-Student/github-342165131.git
 git branch -M main
 git push -u origin main
 
-git config --global user.name (gets current user)
-git config --global user.email(gets current user email)
-
-HOW TO SWITCH ACCOUNTS
-$ git config --global user.email "email"
-$ git config --global user.name "name"
-$ git config --global user.password  "password"
-$ git config --global user.email (check for updated email)
-
-
+HOW TO SWITCH GITHUB ACCOUNTS (REMOVE ALL CREDENTIALS WITH GITHUB RELATION)
+https://www.youtube.com/watch?v=aSTTJd5JMXg
 
