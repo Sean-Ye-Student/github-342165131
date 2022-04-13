@@ -14,3 +14,13 @@ git branch -M main
 git push -u origin main
 
 git config --global user.name (gets current user)
+git config --global user.email(gets current user email)
+
+HOW TO SWITCH ACCOUNTS
+$ git config --global user.email "email"
+$ git config --global user.name "name"
+$ git config --global user.password  "password"
+$ git config --global user.email (check for updated email)
+
+
+
