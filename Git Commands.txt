@@ -12,3 +12,5 @@ OR
 git remote add origin https://github.com/Sean-Ye-Student/github-342165131.git
 git branch -M main
 git push -u origin main
+
+git config --global user.name (gets current user)
