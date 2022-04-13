@@ -1,3 +1,4 @@
+#Connect 4 game
 import colorama
 import time
 from colorama import Fore
