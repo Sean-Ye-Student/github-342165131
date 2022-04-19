@@ -1,0 +1,18 @@
+echo "# github-342165131" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Sean-Ye-Student/github-342165131.git
+git push -u origin main
+
+
+OR
+
+git remote add origin https://github.com/Sean-Ye-Student/github-342165131.git
+git branch -M main
+git push -u origin main
+
+HOW TO SWITCH GITHUB ACCOUNTS (REMOVE ALL CREDENTIALS WITH GITHUB RELATION)
+https://www.youtube.com/watch?v=aSTTJd5JMXg
+
