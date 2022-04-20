@@ -96,20 +96,7 @@ def draw():
         stroke(0)
         fill(ball[3][0], ball[3][1], ball[3][2])
         ellipse(ball[0] + globalX, ball[1] + globalY, ball[2], ball[2])
-    print(globalX, globalY)
     for i in range(len(balls)):
         for ii in range(len(balls)):
             if CanEat(i, ii):
                 break
-    # for i in range(len(balls)):
-    #     for bigger_ball in balls:
-    #         big_r = bigger_ball[2]
-    #         ball_r = balls[i][2]
-    #         bpX = bigger_ball[0]
-    #         bpY = bigger_ball[0]
-    #         pX = balls[i][0]
-    #         pY = balls[i][1]
-            
-    #         
-            
-            
