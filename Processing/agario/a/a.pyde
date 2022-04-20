@@ -1,13 +1,13 @@
 import random
 import time
-screenSizeX, screenSizeY = 500, 500
+screenSizeX, screenSizeY = 1000, 1000
 
 #Later on ball properties can be a dictionary for readability 
-balls_spawns = 20
-max_magnitude = 250
+balls_spawns = 40
+max_magnitude = 2000
 min_magnitude = 100
 starting_size = 25
-sizeMin, sizeMax  = 5, 100
+sizeMin, sizeMax  = 5, 500
 
 centerX, centerY = screenSizeX/2, screenSizeY/2
 globalX, globalY = 0, 0
@@ -96,7 +96,7 @@ def draw():
         stroke(0)
         fill(ball[3][0], ball[3][1], ball[3][2])
         ellipse(ball[0] + globalX, ball[1] + globalY, ball[2], ball[2])
-
+    print(globalX, globalY)
     for i in range(len(balls)):
         for ii in range(len(balls)):
             if CanEat(i, ii):
