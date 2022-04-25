@@ -1,0 +1,52 @@
+IMAGE KEY
+
+"image" : {
+	"name" : "name goes here",
+	"size" : {"x" : 0, "y" : 0
+	"pos" : {"x" : 0, "y" : 0}
+},
+
+LINE KEY
+
+"line" : {
+	"r" : 255,
+	"g" : 255,
+	"b" : 255,
+	"a" : 255,
+	"weight" : 1,
+	"pos" : {"x" : 0, "y" : 0},
+	"pos2" : {"x" : 0, "y" : 0}
+},
+
+BUTTON WITH FUNCTION PAIR
+
+def FUNCTION():
+  print("Button Clicked")
+
+"button" : {
+	"mouse" : LEFT,
+	"function" : FUNCTION,
+	"area" : {"pos" : {"x" : 187, "y" : 152}, "pos2" : {"x" : 500, "y" : 500}}
+
+RECT KEY
+"rect" : {
+	"fill" : {
+          	"r" : 255,
+          	"g" : 255,
+          	"b" : 255,
+          	"a" : 255
+		},
+
+	"stroke" :{
+        	"r" : 255,
+        	"g" : 255,
+        	"b" : 255,
+        	"hidden" : True
+		},
+
+
+	"weight" : 1,
+	"pos" : {"x" : 0, "y" : 0},
+	"size" : {"x" : 10, "y" : 10}
+	}
+}
