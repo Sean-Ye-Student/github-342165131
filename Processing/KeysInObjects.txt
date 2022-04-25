@@ -2,7 +2,7 @@ IMAGE KEY
 
 "image" : {
 	"name" : "name goes here",
-	"size" : {"x" : 0, "y" : 0
+	"size" : {"x" : 0, "y" : 0}
 	"pos" : {"x" : 0, "y" : 0}
 },
 
