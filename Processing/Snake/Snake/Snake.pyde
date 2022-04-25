@@ -1,26 +1,59 @@
 import random
-objects = [
-{"rect" : {
-"fill" : {
-          "r" : 255,
-          "g" : 255,
-          "b" : 255,
-          "a" : 255
-},
+objects = []
+objects.append({
+          "rect" : {
+                    "fill" : {
+                              "r" : 255,
+                              "g" : 255,
+                              "b" : 255,
+                              "a" : 255
+                    },
 
-"stroke" :{
-        "r" : 255,
-        "g" : 255,
-        "b" : 255,
-        "hidden" : True
-},
+                    "stroke" :{
+                            "r" : 255,
+                            "g" : 255,
+                            "b" : 255,
+                            "hidden" : True
+                    },
 
 
-"weight" : 1,
-"pos" : {"x" : 0, "y" : 0},
-"size" : {"x" : 10, "y" : 10}
-}}
-]
+                    "weight" : 1,
+                    "pos" : {"x" : 0, "y" : 0},
+                    "size" : {"x" : 10, "y" : 10}
+                    }
+})
+playing = False
+def TOGGLEPLAY():
+     global playing
+     playing = not(playing)
+objects.append({
+  "button" : {
+          "mouse" : LEFT,
+          "function" : TOGGLEPLAY,
+          "area" : {"pos" : {"x" : 475, "y" : 0}, "pos2" : {"x" : 500, "y" : 25}}
+          },
+          
+  "image" : {
+          "name" : "pause.png",
+          "size" : {"x" : 25, "y" : 25}
+          "pos" : {"x" : 475, "y" : 0}
+          }        
+})
+
+
+objects.append({
+          "button" : {
+                    "mouse" : LEFT,
+	          "function" : TOGGLEPLAY,
+	          "area" : {"pos" : {"x" : 200, "y" : 225}, "pos2" : {"x" : 300, "y" : 275}}
+          },
+          
+          "image" : {
+	          "name" : "play.png",
+	          "size" : {"x" : 100, "y" : 50}
+	          "pos" : {"x" : 200, "y" : 225}
+          }
+})
 
 types = {"str" : type(""), "list" : type([]), "tuple" : type(()), "dict" : type({})}
 def g_c_key(d, kys):
@@ -51,12 +84,13 @@ def mousePressed():
             y2 = g_c_key(button, ("area", "pos2", "y"))
             if min(x, x2) <= mouseX <= max(x, x2) and min(y, y2) <= mouseY <= max(x, x2):
                 f = g_c_key(button, "function")
-                print(f)
                 if f != None:
                     f()
             
 def draw():
-    global objects
+    global objects, playing
+    if not(playing):
+         return
     #setup()
     x = g_c_key(objects, (0, "rect", "pos", "x"))
     y = g_c_key(objects, (0, "rect", "pos", "y")) 
@@ -76,7 +110,7 @@ def draw():
             x, y, x2, y2 = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(p2, "x"), g_c_key(p2, "y")
             if x != None and y != None and x2 != None and y2 != None:
                 stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-                strokeWeight(w if w != None else None)
+                strokeWeight(w if w != None else 1)
                 line(x, y, x2, y2, )
                 
         #RENDERS RECT
@@ -88,17 +122,17 @@ def draw():
             p = g_c_key(re, "pos")
             s = g_c_key(re, "size")
             st = g_c_key(re, "stroke")
+            rst, gst, bst, = g_c_key(st, "r"), g_c_key(st, "g"), g_c_key(st, "b")
             hidden = g_c_key(re, ("stroke", "hidden")
             if hidden:
                 noStroke()
             else:
-                print("make this into stroke")
-                #stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255)
+                stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255)
                 
             x, y, sx, sy = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(s, "x"), g_c_key(s, "y")
             if x != None and y != None and sx != None and sy != None:
                 fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-                strokeWeight(w if w != None else None)
+                strokeWeight(w if w != None else 1)
                 rect(x, y, sx, sy)
         
         #RENDERS THE IMAGE
