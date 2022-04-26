@@ -88,6 +88,41 @@ objects.append({
                           
 })
 
+objects.append({
+               "text" : {
+                         "font" : "Minecraftia-Regular.ttf",
+                         "fill" : {
+                              "r" : 0,
+                              "g" : 255,
+                              "b" : 0,
+                              "a" : 255
+                         },
+                         "word" : "Score: 0",
+                         "size" : 25,
+                         "pos" : {"x" : 325, "y" : 50, "z" : 0},
+                         #"startshow" : 0,
+                         #"showtime" : 2
+                         }
+})
+
+objects.append({
+                "text": {
+                         "font" : "Minecraftia-Regular.ttf",
+                         "fill" : {
+                              "r" : 255,
+                              "g" : 0,
+                              "b" : 0,
+                              "a" : 0
+                         },
+                         "word" : "Hit",
+                         "size" : 25,
+                         "pos" : {"x" : 280, "y" : 50, "z" : 0},
+                         "startshow" : 0,
+                         "showtime" : 0.5
+                         }
+                
+})
+
 playing = False
 def HIDE():
      for object in objects:
@@ -190,9 +225,10 @@ def PlayerControl():
 
     
    
-             
+    #LOGIC FOR PLAYER CONTROLLER, CHECKS IF VARIABLES EXIST         
     if x != None and y != None and sx != None and sy != None and gx != None and gy != None and gsx != None and gsy != None and rx != None and ry != None and rsx != None and rsy != None:
         if keyPressed:
+            print(key)
             if key == "w":
                 direction = [0, -increment_move]
             elif key == "s":
@@ -201,7 +237,7 @@ def PlayerControl():
                 direction = [-increment_move, 0]
             elif key == "d":
                 direction = [increment_move, 0]
-            
+        #OUT OF BOUNDS LOGIC
         if x < -20:
             objects[0]["rect"]["pos"]["x"] = 500
         elif x > 500:
@@ -211,24 +247,30 @@ def PlayerControl():
         elif y > 500:
             objects[0]["rect"]["pos"]["y"] = -20
         
+        #DETECTS IF THE BLOCK IS ON GREEN
         in_green = lambda x, y, top_left_corner: (gx < x < gx + gsx and gy < y < gy + gsy) or (top_left_corner and x == gx and y == gy and x + sx == gx + gsx and y + sy == gy + gsy) 
         if in_green(x, y, True) or in_green(x + sx, y, False) or in_green(x, y + sy, False) or in_green(x + sx, y + sy, False):
             speed = speed*1.1
             objects[1]["rect"]["pos"]["x"] = random.randint(0, 480/20) * 20 #make sure the entire square is visible
             objects[1]["rect"]["pos"]["y"] = random.randint(0, 480/20) * 20 #make sure the entire square is visible
-
+            score += 1
+            objects[3]["text"]["word"] = "Score: " + str(score)
+            objects[3]["text"]["startshow"] = time.time()
+            
+        #DETECTS IF THE BLOCK IS ON RED
         in_red = lambda x, y, top_left_corner: (rx < x < rx + rsx and ry < y < ry + rsy) or (top_left_corner and x == rx and y == ry and x + sx == rx + rsx and y + sy == ry + rsy) 
         if in_red(x, y, True) or in_red(x + sx, y, False) or in_red(x, y + sy, False) or in_red(x + sx, y + sy, False):
             x = 0
+            objects[4]["text"]["startshow"] = time.time()#EFFECT FOR HIT TEXT
             while x < 1000: #spawns the player first
                 x += 1
                 objects[0]["rect"]["pos"]["x"] = random.randint(0, 480/20) * 20 #make sure the entire square is visible
                 objects[0]["rect"]["pos"]["y"] = random.randint(0, 480/20) * 20 #make sure the entire square is visible
-                
+                #CANNOT SPAWN PLAYER NEAR GREEN
                 x, y = g_c_key(objects, (0, "rect", "pos", "x")), g_c_key(objects, (0, "rect", "pos", "y")) 
                 if ((x - gx)**2 + (y - gy)**2 + 0.0)**0.5 >= min_spawn_magnitude_to_green:
                     break
-            x = 0
+            x = 0#SPAWNS RED BLOCK
             while x < 1000:
                 x += 1
                 
@@ -236,11 +278,11 @@ def PlayerControl():
                 objects[2]["rect"]["pos"]["y"] = random.randint(0, 480/20) * 20 #make sure the entire square is visible
                 
 
-                
+                #RED BLOCK CANNOT BE NEAR GREEN
                 rx, ry = g_c_key(objects, (1, "rect", "pos", "x")), g_c_key(objects, (1, "rect", "pos", "y")) 
                 if ((rx - gx)**2 + (ry - gy)**2 + 0.0)**0.5 >= min_spawn_magnitude_red and ((rx - x)**2 + (ry - y)**2 + 0.0)**0.5 >= min_spawn_magnitude_red:
                     break
-
+        #MOVES THE PLAYER AT A INCREMENTED SPEED, LOOKS LIKE AN ARCADE GAME
         if time.time() - last_time >= 0.5/speed:
             objects[0]["rect"]["pos"]["x"] += direction[0]
             objects[0]["rect"]["pos"]["y"] += direction[1]
@@ -248,58 +290,103 @@ def PlayerControl():
             # objects[0]["rect"]["fill"]["r"] = random.randint(0, 255)
             # objects[0]["rect"]["fill"]["g"] = random.randint(0, 255)
             # objects[0]["rect"]["fill"]["b"] = random.randint(0, 255)
+
+def RENDERLINE(object):
+    global objects
+    l = g_c_key(object, "line")
+    if l == None:
+        return            
+    r, g, b, a = g_c_key(l, "r"), g_c_key(l, "g"), g_c_key(l, "b"), g_c_key(l, "a")
+    w = g_c_key(l, "weight")
+    p, p2 = g_c_key(l, "pos"), g_c_key(l, "pos2")
+    x, y, x2, y2 = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(p2, "x"), g_c_key(p2, "y")
+    if x != None and y != None and x2 != None and y2 != None:
+        stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
+        strokeWeight(w if w != None else 1)
+        line(x, y, x2, y2)
+                
+def RENDERRECT(object):
+    global objects
+    re = g_c_key(object, "rect")
+    if re == None:
+        return
+    f = g_c_key(re, "fill")
+    r, g, b, a = g_c_key(f, "r"), g_c_key(f, "g"), g_c_key(f, "b"), g_c_key(f, "a")
+    w = g_c_key(re, "weight")
+    p = g_c_key(re, "pos")
+    s = g_c_key(re, "size")
+    st = g_c_key(re, "stroke")
+    rst, gst, bst, = g_c_key(st, "r"), g_c_key(st, "g"), g_c_key(st, "b")
+    hidden = g_c_key(re, ("stroke", "hidden"))
+    if hidden:
+        noStroke()
+    else:
+        stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255)
+        
+    x, y, sx, sy = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(s, "x"), g_c_key(s, "y")
+    if x != None and y != None and sx != None and sy != None:
+        fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
+        strokeWeight(w if w != None else 1)
+        rect(x, y, sx, sy)
+            
+def RENDERTEXT(object):
+    global objects
+    t = g_c_key(object, "text")
+    if t == None:
+        return
+    word = g_c_key(t, "word")
+    s = g_c_key(t, "size")
+    r, g, b, a = g_c_key(t, ("fill", "r")),  g_c_key(t, ("fill", "g")), g_c_key(t, ("fill", "b")), g_c_key(t, ("fill", "a"))
+    x, y, z = g_c_key(t, ("pos", "x")), g_c_key(t, ("pos", "y")), g_c_key(t, ("pos", "z"))
+    f = g_c_key(t, "font")
+    
+    start, tim = g_c_key(t, "startshow"), g_c_key(t, "showtime")
+    a_lerp = 255
+    if start != None and tim != None:
+        if time.time() - start > tim:
+            return#WILL NOT DRAW TEXT IF NOT SHOWING
+        elif time.time() - start > (tim + 0.0)/2:#FADE HIDE AFFECT
+            a_lerp = 255 - ((255*(time.time() - start)/tim) if tim > 0 else 0)
+            
+        else:#FADE SHOW AFFECT
+            a_lerp = 255/(tim/(time.time() - start)) if (time.time() - start) > 0 else 0
+        
+
+
+    F = createFont(f if f != None else "", 16)
+    #f = createFont(, s)
+    textFont(F)
+    if a_lerp != 255:
+        a = a_lerp
+    fill(r if r != None else 255, g if g != None else 255, z if z != None else 255, a if a != None else 255)
+    textSize(s if s != None else 12)
+    text(word if word != None else "PLACEHOLDER", x if x != None else 0, y if y != None else 0, z if z != None else 0)            
+
+def RENDERIMAGE(object):
+    global objects
+    img = g_c_key(object, "image")
+    if img == None:
+        return
+    img_name = g_c_key(img, "name")
+    img_size = g_c_key(img, "size")
+    x = g_c_key(img, ("pos","x"))
+    y = g_c_key(img, ("pos","y"))
+    sx = g_c_key(img, ("size","x"))
+    sy = g_c_key(img, ("size","y"))
+    if img_name != None and x != None and y != None and sx != None and sy != None:
+        r,g,b = g_c_key(img, ("tint", "r")), g_c_key(img, ("tint", "g")), g_c_key(img, ("tint", "b"))
+        a = g_c_key(img, ("tint", "a"))
+        
+        tint(r if r != None else 0, g if g != None else 0, b if b != None else 0, a if a != None else 255)
+        image(loadImage(img_name), x, y, sx, sy)          
 def draw():
     global objects, playing
-    setup()
-    if playing:
+    setup()#DRAWS BACKGROUND 
+    if playing:#PLAYER WONT MOVE WHEN PAUSED
         PlayerControl()
     for object in objects:
-        #RENDERS LINES
-        l = g_c_key(object, "line")
-        if l != None:            
-            r, g, b, a = g_c_key(l, "r"), g_c_key(l, "g"), g_c_key(l, "b"), g_c_key(l, "a")
-            w = g_c_key(l, "weight")
-            p, p2 = g_c_key(l, "pos"), g_c_key(l, "pos2")
-            x, y, x2, y2 = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(p2, "x"), g_c_key(p2, "y")
-            if x != None and y != None and x2 != None and y2 != None:
-                stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-                strokeWeight(w if w != None else 1)
-                line(x, y, x2, y2, )
-                
-        #RENDERS RECT
-        re = g_c_key(object, "rect")
-        if re != None:
-            f = g_c_key(re, "fill")
-            r, g, b, a = g_c_key(f, "r"), g_c_key(f, "g"), g_c_key(f, "b"), g_c_key(f, "a")
-            w = g_c_key(re, "weight")
-            p = g_c_key(re, "pos")
-            s = g_c_key(re, "size")
-            st = g_c_key(re, "stroke")
-            rst, gst, bst, = g_c_key(st, "r"), g_c_key(st, "g"), g_c_key(st, "b")
-            hidden = g_c_key(re, ("stroke", "hidden"))
-            if hidden:
-                noStroke()
-            else:
-                stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255)
-                
-            x, y, sx, sy = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(s, "x"), g_c_key(s, "y")
-            if x != None and y != None and sx != None and sy != None:
-                fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-                strokeWeight(w if w != None else 1)
-                rect(x, y, sx, sy)
-        
-        #RENDERS THE IMAGE
-        img = g_c_key(object, "image")
-        if img != None:
-            img_name = g_c_key(img, "name")
-            img_size = g_c_key(img, "size")
-            x = g_c_key(img, ("pos","x"))
-            y = g_c_key(img, ("pos","y"))
-            sx = g_c_key(img, ("size","x"))
-            sy = g_c_key(img, ("size","y"))
-            if img_name != None and x != None and y != None and sx != None and sy != None:
-                r,g,b = g_c_key(img, ("tint", "r")), g_c_key(img, ("tint", "g")), g_c_key(img, ("tint", "b"))
-                a = g_c_key(img, ("tint", "a"))
-   
-                tint(r if r != None else 0, g if g != None else 0, b if b != None else 0, a if a != None else 255)
-                image(loadImage(img_name), x, y, sx, sy)            
+        RENDERLINE(object)#RENDERS LINES
+        RENDERRECT(object)#RENDERS RECT
+        RENDERTEXT(object)#RENDERS TEXT
+        RENDERIMAGE(object)#RENDERS THE IMAGE
+          
