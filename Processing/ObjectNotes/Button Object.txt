@@ -1,0 +1,9 @@
+BUTTON WITH FUNCTION PAIR
+
+def FUNCTION():
+  print("Button Clicked")
+
+"button" : {
+	"mouse" : LEFT,
+	"function" : FUNCTION,
+	"area" : {"pos" : {"x" : 0, "y" : 0}, "pos2" : {"x" : 0, "y" : 0}}

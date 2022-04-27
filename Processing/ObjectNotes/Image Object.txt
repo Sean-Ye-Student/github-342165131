@@ -1,0 +1,25 @@
+def RENDERIMAGE(object):
+    global objects
+    img = g_c_key(object, "image")
+    if img == None:
+        return
+    img_name = g_c_key(img, "name")
+    img_size = g_c_key(img, "size")
+    x = g_c_key(img, ("pos","x"))
+    y = g_c_key(img, ("pos","y"))
+    sx = g_c_key(img, ("size","x"))
+    sy = g_c_key(img, ("size","y"))
+    if img_name != None and x != None and y != None and sx != None and sy != None:
+        r,g,b = g_c_key(img, ("tint", "r")), g_c_key(img, ("tint", "g")), g_c_key(img, ("tint", "b"))
+        a = g_c_key(img, ("tint", "a"))
+        
+        tint(r if r != None else 0, g if g != None else 0, b if b != None else 0, a if a != None else 255)
+        image(loadImage(img_name), x, y, sx, sy)          
+
+
+"image" : {
+	"name" : "name goes here",
+	"size" : {"x" : 0, "y" : 0},
+	"pos" : {"x" : 0, "y" : 0},
+	"tint" : {"r" : 255, "g" : 255, "b" : 255, "alpha" : 255}
+},

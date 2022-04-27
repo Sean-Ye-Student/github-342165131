@@ -17,111 +17,11 @@ def g_c_key(d, kys):
         else:
             return None
 
-objects.append({
-          "rect" : {
-                    "fill" : {
-                              "r" : 255,
-                              "g" : 255,
-                              "b" : 255,
-                              "a" : 255
-                    },
-
-                    "stroke" :{
-                            "r" : 255,
-                            "g" : 255,
-                            "b" : 255,
-                            "hidden" : True
-                    },
-
-
-                    "weight" : 1,
-                    "pos" : {"x" : 240, "y" : 240},
-                    "size" : {"x" : 20, "y" : 20}
-                    }
-})
-
-objects.append({
-      "rect" : {
-                    "fill" : {
-                              "r" : 0,
-                              "g" : 255,
-                              "b" : 0,
-                              "a" : 255
-                    },
-
-                    "stroke" :{
-                            "r" : 255,
-                            "g" : 255,
-                            "b" : 255,
-                            "hidden" : True
-                    },
-
-
-                    "weight" : 1,
-                    "pos" : {"x" : 440, "y" : 240},
-                    "size" : {"x" : 20, "y" : 20}
-                    }
-                          
-})
-
-objects.append({
-      "rect" : {
-                    "fill" : {
-                              "r" : 255,
-                              "g" : 0,
-                              "b" : 0,
-                              "a" : 255
-                    },
-
-                    "stroke" :{
-                            "r" : 255,
-                            "g" : 255,
-                            "b" : 255,
-                            "hidden" : True
-                    },
-
-
-                    "weight" : 1,
-                    "pos" : {"x" : 60, "y" : 240},
-                    "size" : {"x" : 20, "y" : 20}
-                    }
-                          
-})
-
-objects.append({
-               "text" : {
-                         "font" : "Minecraftia-Regular.ttf",
-                         "fill" : {
-                              "r" : 0,
-                              "g" : 255,
-                              "b" : 0,
-                              "a" : 255
-                         },
-                         "word" : "Score: 0",
-                         "size" : 25,
-                         "pos" : {"x" : 325, "y" : 50, "z" : 0},
-                         #"startshow" : 0,
-                         #"showtime" : 2
-                         }
-})
-
-objects.append({
-                "text": {
-                         "font" : "Minecraftia-Regular.ttf",
-                         "fill" : {
-                              "r" : 255,
-                              "g" : 0,
-                              "b" : 0,
-                              "a" : 0
-                         },
-                         "word" : "Hit",
-                         "size" : 25,
-                         "pos" : {"x" : 280, "y" : 50, "z" : 0},
-                         "startshow" : 0,
-                         "showtime" : 0.5
-                         }
-                
-})
+objects.append({"rect" : {"fill" : {"r" : 255,"g" : 255,"b" : 255,"a" : 255}, "stroke" :{"r" : 255, "g" : 255, "b" : 255, "hidden" : True}, "weight" : 1, "pos" : {"x" : 240, "y" : 240}, "size" : {"x" : 20, "y" : 20}}})
+objects.append({"rect" : {"fill" : {"r" : 0,"g" : 255,"b" : 0,"a" : 255},"stroke" :{"r" : 255,"g" : 255,"b" : 255,"hidden" : True},"weight" : 1,"pos" : {"x" : 440, "y" : 240},"size" : {"x" : 20, "y" : 20}}})
+objects.append({"rect" : {"fill" : {"r" : 255,"g" : 0,"b" : 0,"a" : 255},"stroke" :{"r" : 255,"g" : 255,"b" : 255,"hidden" : True},"weight" : 1,"pos" : {"x" : 60, "y" : 240},"size" : {"x" : 20, "y" : 20}}})
+objects.append({"text" : {"font" : "Minecraftia-Regular.ttf","fill" : {"r" : 0,"g" : 255,"b" : 0,"a" : 255},"word" : "Score: 0","size" : 25,"pos" : {"x" : 325, "y" : 50, "z" : 0}}})
+objects.append({"text": {"font" : "Minecraftia-Regular.ttf","fill" : {"r" : 255,"g" : 0,"b" : 0,"a" : 0},"word" : "Hit","size" : 25,"pos" : {"x" : 280, "y" : 50, "z" : 0},"startshow" : 0,"showtime" : 0.5}})
 
 playing = False
 def HIDE():
@@ -130,63 +30,40 @@ def HIDE():
         if name == "play.png" or name == "pause.png":
             x = name == "play.png"
             object["image"]["tint"]["a"] = 0 if x == playing else 255
-
-def PLAY():
-    global playing
-    playing = True
-    HIDE()
     
 def PAUSE():
     global playing
     playing = False
     HIDE()
-   
-
-objects.append({
-  "button" : {
-          "mouse" : LEFT,
-          "function" : PAUSE,
-          "area" : {"pos" : {"x" : 475, "y" : 0}, "pos2" : {"x" : 500, "y" : 25}}
-          },
-          
-  "image" : {
-          "name" : "pause.png",
-          "tint" : {  
-                     "r" : 255,
-                     "g" : 255,
-                     "b" : 255,
-                     "a" : 0
-                     },
-          "size" : {"x" : 25, "y" : 25},
-          "pos" : {"x" : 475, "y" : 0}
-          }        
-})
+objects.append({"button" : {"mouse" : LEFT, "function" : PAUSE, "area" : {"pos" : {"x" : 475, "y" : 0}, "pos2" : {"x" : 500, "y" : 25}}}, "image" : {"name" : "pause.png","tint" : {  "r" : 255,"g" : 255,"b" : 255,"a" : 0},"size" : {"x" : 25, "y" : 25},"pos" : {"x" : 475, "y" : 0}}        })
 
 
-objects.append({
-    "button" : {
-            "mouse" : LEFT,
-	          "function" : PLAY,
-	          "area" : {"pos" : {"x" : 200, "y" : 225}, "pos2" : {"x" : 300, "y" : 275}}
-          },
-          
-          "image" : {
-	          "name" : "play.png",
-	          "tint" : {  
-                     "r" : 255,
-                     "g" : 255,
-                     "b" : 255,
-                     "a" : 255
-                     },
-	          "size" : {"x" : 100, "y" : 50},
-	          "pos" : {"x" : 200, "y" : 225}
-          }
-})
-
-
+def PLAY():
+    global playing, is_playing
+    is_playing = True
+    playing = True
+    objects[7]["image"]["tint"]["a"] = 0
+    HIDE()
+    
+objects.append({"button" : {"mouse" : LEFT,"function" : PLAY,"area" : {"pos" : {"x" : 200, "y" : 225}, "pos2" : {"x" : 300, "y" : 275}}},"image" : {"name" : "play.png","tint" : {  "r" : 255,"g" : 255,"b" : 255,"a" : 255},"size" : {"x" : 100, "y" : 50},"pos" : {"x" : 200, "y" : 225}}})
+gameMode = "d"
+is_playing = False
+increment_move = 5 #Set by gamemode
+direction = [increment_move, 0]
+def SwitchGameMode():
+    global gameMode, is_playing, increment_move, direction
+    is_playing == False if is_playing == False and not(playing) else True
+    if is_playing:
+        return
+    gameMode = "a" if gameMode == "d" else "d"
+    increment_move = 20 if gameMode == "a" else 5
+    direction = [increment_move, 0]
+    objects[7]["image"]["name"] = "dynamic.png" if gameMode == "d" else "arcade.png"
+    
+objects.append({"button" : {"mouse" : LEFT,"function" : SwitchGameMode, "area" : {"pos" : {"x" : 200, "y" : 290}, "pos2" : {"x" : 300, "y" : 390}}},"image" : {"name" : "dynamic.png","tint" : {"r" : 255,"g" : 255,"b" : 255,"a" : 255},"size" : {"x" : 100, "y" : 100},"pos" : {"x" : 200, "y" : 290}}})
 
 def setup():
-    background(100)
+    background('#004477')
     size(500, 500)
 
 def mousePressed():
@@ -197,20 +74,18 @@ def mousePressed():
             y = g_c_key(button, ("area", "pos", "y"))
             x2 = g_c_key(button, ("area", "pos2", "x"))
             y2 = g_c_key(button, ("area", "pos2", "y"))
-            if min(x, x2) <= mouseX <= max(x, x2) and min(y, y2) <= mouseY <= max(x, x2):
+            if min(x, x2) <= mouseX <= max(x, x2) and min(y, y2) <= mouseY <= max(y, y2):
                 f = g_c_key(button, "function")
                 if f != None:
                     f()
 speed = 1
-increment_move = 20
-direction = [increment_move, 0]
 positions = [(-100, -100) for i in range(1)]
 min_spawn_magnitude_red = 100 #red must spawn these many pixels away from other objects
 min_spawn_magnitude_to_green = 300 #white must spawn these many pixels away from green
 score = 0
 last_time = 0
 def PlayerControl():
-    global direction, score, speed, min_spawn_magnitude_to_green, positions, last_time
+    global direction, score, speed, min_spawn_magnitude_to_green, positions, last_time, gameMode
     i = 0
     x, y = g_c_key(objects, (i, "rect", "pos", "x")), g_c_key(objects, (i, "rect", "pos", "y")) 
     sx, sy = g_c_key(objects, (i, "rect", "size", "x")), g_c_key(objects, (i, "rect", "size", "y"))
@@ -254,6 +129,12 @@ def PlayerControl():
             objects[1]["rect"]["pos"]["x"] = random.randint(0, 480/20) * 20 #make sure the entire square is visible
             objects[1]["rect"]["pos"]["y"] = random.randint(0, 480/20) * 20 #make sure the entire square is visible
             score += 1
+            
+            objects[4]["text"]["fill"]["r"] = 0
+            objects[4]["text"]["fill"]["g"] = 255
+            objects[4]["text"]["fill"]["b"] = 0
+            objects[4]["text"]["startshow"] = time.time()#EFFECT FOR HIT TEXT
+            
             objects[3]["text"]["word"] = "Score: " + str(score)
             objects[3]["text"]["startshow"] = time.time()
             
@@ -261,7 +142,11 @@ def PlayerControl():
         in_red = lambda x, y, top_left_corner: (rx < x < rx + rsx and ry < y < ry + rsy) or (top_left_corner and x == rx and y == ry and x + sx == rx + rsx and y + sy == ry + rsy) 
         if in_red(x, y, True) or in_red(x + sx, y, False) or in_red(x, y + sy, False) or in_red(x + sx, y + sy, False):
             x = 0
+            objects[4]["text"]["fill"]["r"] = 255
+            objects[4]["text"]["fill"]["g"] = 0
+            objects[4]["text"]["fill"]["b"] = 0
             objects[4]["text"]["startshow"] = time.time()#EFFECT FOR HIT TEXT
+            
             while x < 1000: #spawns the player first
                 x += 1
                 objects[0]["rect"]["pos"]["x"] = random.randint(0, 480/20) * 20 #make sure the entire square is visible
@@ -283,27 +168,17 @@ def PlayerControl():
                 if ((rx - gx)**2 + (ry - gy)**2 + 0.0)**0.5 >= min_spawn_magnitude_red and ((rx - x)**2 + (ry - y)**2 + 0.0)**0.5 >= min_spawn_magnitude_red:
                     break
         #MOVES THE PLAYER AT A INCREMENTED SPEED, LOOKS LIKE AN ARCADE GAME
-        if time.time() - last_time >= 0.5/speed:
-            objects[0]["rect"]["pos"]["x"] += direction[0]
-            objects[0]["rect"]["pos"]["y"] += direction[1]
-            last_time = time.time()
-            # objects[0]["rect"]["fill"]["r"] = random.randint(0, 255)
-            # objects[0]["rect"]["fill"]["g"] = random.randint(0, 255)
-            # objects[0]["rect"]["fill"]["b"] = random.randint(0, 255)
+        if gameMode == "a":
+            if time.time() - last_time >= 0.5/speed:
+                objects[0]["rect"]["pos"]["x"] += direction[0]
+                objects[0]["rect"]["pos"]["y"] += direction[1]
+                last_time = time.time()
+        elif gameMode == "d":
+            objects[0]["rect"]["pos"]["x"] += direction[0] * speed
+            objects[0]["rect"]["pos"]["y"] += direction[1] * speed
+            
 
-def RENDERLINE(object):
-    global objects
-    l = g_c_key(object, "line")
-    if l == None:
-        return            
-    r, g, b, a = g_c_key(l, "r"), g_c_key(l, "g"), g_c_key(l, "b"), g_c_key(l, "a")
-    w = g_c_key(l, "weight")
-    p, p2 = g_c_key(l, "pos"), g_c_key(l, "pos2")
-    x, y, x2, y2 = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(p2, "x"), g_c_key(p2, "y")
-    if x != None and y != None and x2 != None and y2 != None:
-        stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-        strokeWeight(w if w != None else 1)
-        line(x, y, x2, y2)
+
                 
 def RENDERRECT(object):
     global objects
@@ -354,7 +229,6 @@ def RENDERTEXT(object):
 
 
     F = createFont(f if f != None else "", 16)
-    #f = createFont(, s)
     textFont(F)
     if a_lerp != 255:
         a = a_lerp
@@ -379,13 +253,14 @@ def RENDERIMAGE(object):
         
         tint(r if r != None else 0, g if g != None else 0, b if b != None else 0, a if a != None else 255)
         image(loadImage(img_name), x, y, sx, sy)          
+        
 def draw():
     global objects, playing
     setup()#DRAWS BACKGROUND 
     if playing:#PLAYER WONT MOVE WHEN PAUSED
         PlayerControl()
     for object in objects:
-        RENDERLINE(object)#RENDERS LINES
+       
         RENDERRECT(object)#RENDERS RECT
         RENDERTEXT(object)#RENDERS TEXT
         RENDERIMAGE(object)#RENDERS THE IMAGE
