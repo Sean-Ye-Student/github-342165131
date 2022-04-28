@@ -4,13 +4,11 @@ def RENDERLINE(object):
     if l == None:
         return            
     r, g, b, a = g_c_key(l, "r"), g_c_key(l, "g"), g_c_key(l, "b"), g_c_key(l, "a")
-    w = g_c_key(l, "weight")
-    p, p2 = g_c_key(l, "pos"), g_c_key(l, "pos2")
+    w, p, p2 = g_c_key(l, "weight"), g_c_key(l, "pos"), g_c_key(l, "pos2")
     x, y, x2, y2 = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(p2, "x"), g_c_key(p2, "y")
-    if x != None and y != None and x2 != None and y2 != None:
-        stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-        strokeWeight(w if w != None else 1)
-        line(x, y, x2, y2)
+    stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
+    strokeWeight(w if w != None else 1)
+    line(x if x != None else 0, y if y != None else 0, x2 if x2 != None else 0, y2 if y2 != None else 0)
 
 "line" : {
 	"r" : 255,

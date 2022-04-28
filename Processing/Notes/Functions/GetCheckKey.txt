@@ -1,0 +1,11 @@
+def g_c_key(d, kys):
+    global types, objects
+    new_d = d
+    kys = (kys,) if not(type(kys) == types["tuple"]) else kys
+    for k in kys:
+        if (type(new_d) == types["list"] and k < len(new_d) and new_d[k]) or (type(new_d) == types["dict"] and k in new_d.keys()):
+            if k == kys[len(kys) - 1]:
+                return new_d[k]
+            new_d = new_d[k]
+        else:
+            return None

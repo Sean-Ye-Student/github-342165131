@@ -3,14 +3,10 @@ def RENDERIMAGE(object):
     img = g_c_key(object, "image")
     if img == None:
         return
-    img_name = g_c_key(img, "name")
-    img_size = g_c_key(img, "size")
-    x = g_c_key(img, ("pos","x"))
-    y = g_c_key(img, ("pos","y"))
-    sx = g_c_key(img, ("size","x"))
-    sy = g_c_key(img, ("size","y"))
+    img_name, img_size  = g_c_key(img, "name"), g_c_key(img, "size")
+    x, y, sx, sy = g_c_key(img, ("pos","x")),  g_c_key(img, ("pos","y")), g_c_key(img, ("size","x")), g_c_key(img, ("size","y"))
     r,g,b,a = g_c_key(img, ("tint", "r")), g_c_key(img, ("tint", "g")), g_c_key(img, ("tint", "b")), g_c_key(img, ("tint", "a"))    
-    tint(r if r != None else 0, g if g != None else 0, b if b != None else 0, a if a != None else 255)
+    tint(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255)
     image(loadImage(img_name if img_name != None else ""), x if x != None else 0, y if y != None else 0, sx if sx != None else 0, sy)          
 
 
