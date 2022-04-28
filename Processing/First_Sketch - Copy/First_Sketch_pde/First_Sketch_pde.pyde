@@ -133,6 +133,8 @@ def SWITCH():
                     nsy = O_size_y
                 object["image"]["size"]["x"] = nsx if d else 0
                 object["image"]["size"]["y"] = nsy if d else 0
+                object["image"]["pos"]["x"] = mouseX - object["image"]["size"]["x"]/2
+                object["image"]["pos"]["y"] = mouseY - object["image"]["size"]["y"]/2
         
             
 objects.append({
