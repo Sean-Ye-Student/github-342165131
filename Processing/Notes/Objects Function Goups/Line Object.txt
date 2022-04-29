@@ -2,10 +2,12 @@ def RENDERLINE(object):
     global objects
     l = g_c_key(object, "line")
     if l == None:
-        return            
-    r, g, b, a = g_c_key(l, "r"), g_c_key(l, "g"), g_c_key(l, "b"), g_c_key(l, "a")
-    w, p, p2 = g_c_key(l, "weight"), g_c_key(l, "pos"), g_c_key(l, "pos2")
-    x, y, x2, y2 = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(p2, "x"), g_c_key(p2, "y")
+        return
+	
+    kys = ("r", "g", "b", "a", "weight", "pos", "pos2", ("pos", "x"), ("pos", "y"), ("pos2", "x"), ("pos2", "y"))
+    r, g, b, a, w, p, p2, x, y, x2, y2  = map([g_c_key(l, ky)] for ky in kys)     #r, g, b, a = g_c_key(l, "r"), g_c_key(l, "g"), g_c_key(l, "b"), g_c_key(l, "a")     
+    #w, p, p2 g_c_key(l, "weight"), g_c_key(l, "pos"), g_c_key(l, "pos2")
+    #x, y, x2, y2 = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(p2, "x"), g_c_key(p2, "y")
     stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
     strokeWeight(w if w != None else 1)
     line(x if x != None else 0, y if y != None else 0, x2 if x2 != None else 0, y2 if y2 != None else 0)
