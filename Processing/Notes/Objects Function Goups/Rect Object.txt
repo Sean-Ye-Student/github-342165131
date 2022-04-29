@@ -3,10 +3,8 @@ def RENDERRECT(object):
     re = g_c_key(object, "rect")
     if re == None:
         return
-    f, w, p, s, st = g_c_key(re, "fill"), g_c_key(re, "weight"), g_c_key(re, "pos"),  g_c_key(re, "size"),  g_c_key(re, "stroke")
-    r, g, b, a = g_c_key(f, "r"), g_c_key(f, "g"), g_c_key(f, "b"), g_c_key(f, "a")
-    rst, gst, bst, ast = g_c_key(st, "r"), g_c_key(st, "g"), g_c_key(st, "b"), g_c_key(st, "a")
-    x, y, sx, sy = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(s, "x"), g_c_key(s, "y")
+    kys = ("fill", "weight", "pos", "size", "stroke", ("fill", "r"), ("fill", "g"), ("fill", "b"), ("fill", "a"), ("stroke", "r"), ("stroke", "g"), ("stroke", "b"), ("stroke", "a"), ("pos", "x"), ("pos", "y"), ("size", "x"), ("size", "y"))
+    f, w, p, s, st, r, g, b, a, rst, gst, bst, ast, x, y, sx, sy = map(None, (g_c_key(re, ky) for ky in kys))
     strokeWeight(w if w != None else 1)
     fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
     stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255, ast if ast != None else 255)
