@@ -14,5 +14,5 @@ def RENDERIMAGE(object):
 	"name" : "name goes here",
 	"size" : {"x" : 0, "y" : 0},
 	"pos" : {"x" : 0, "y" : 0},
-	"tint" : {"r" : 255, "g" : 255, "b" : 255, "alpha" : 255}
+	"tint" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}
 },

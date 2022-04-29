@@ -3,28 +3,18 @@ def RENDERRECT(object):
     re = g_c_key(object, "rect")
     if re == None:
         return
-    f = g_c_key(re, "fill")
+    f, w, p, s, st = g_c_key(re, "fill"), g_c_key(re, "weight"), g_c_key(re, "pos"),  g_c_key(re, "size"),  g_c_key(re, "stroke")
     r, g, b, a = g_c_key(f, "r"), g_c_key(f, "g"), g_c_key(f, "b"), g_c_key(f, "a")
-    w = g_c_key(re, "weight")
-    p = g_c_key(re, "pos")
-    s = g_c_key(re, "size")
-    st = g_c_key(re, "stroke")
-    rst, gst, bst, = g_c_key(st, "r"), g_c_key(st, "g"), g_c_key(st, "b")
-    hidden = g_c_key(re, ("stroke", "hidden"))
-    if hidden:
-        noStroke()
-    else:
-        stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255)
-        
+    rst, gst, bst, ast = g_c_key(st, "r"), g_c_key(st, "g"), g_c_key(st, "b"), g_c_key(st, "a")
     x, y, sx, sy = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(s, "x"), g_c_key(s, "y")
-    if x != None and y != None and sx != None and sy != None:
-        fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-        strokeWeight(w if w != None else 1)
-        rect(x, y, sx, sy)
+    strokeWeight(w if w != None else 1)
+    fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
+    stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255, ast if ast != None else 255)
+    rect(x if x != None else 0, y if y != None else 0, sx if sx != None else 0, sy if sy != None else 0)
 
 "rect" : {
 	"fill" : {"r" : 255, "g" : 255, "b" : 255,"a" : 255},
-	"stroke" :{"r" : 255, "g" : 255, "b" : 255, "hidden" : False},
+	"stroke" :{"r" : 255, "g" : 255, "b" : 255, "a" : 255},
 	"weight" : 1,
 	"pos" : {"x" : 0, "y" : 0},
 	"size" : {"x" : 10, "y" : 10}

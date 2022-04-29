@@ -17,9 +17,9 @@ def g_c_key(d, kys):
         else:
             return None
 
-objects.append({"rect" : {"fill" : {"r" : 255,"g" : 255,"b" : 255,"a" : 255}, "stroke" :{"r" : 255, "g" : 255, "b" : 255, "hidden" : True}, "weight" : 1, "pos" : {"x" : 240, "y" : 240}, "size" : {"x" : 20, "y" : 20}}})
-objects.append({"rect" : {"fill" : {"r" : 0,"g" : 255,"b" : 0,"a" : 255},"stroke" :{"r" : 255,"g" : 255,"b" : 255,"hidden" : True},"weight" : 1,"pos" : {"x" : 440, "y" : 240},"size" : {"x" : 20, "y" : 20}}})
-objects.append({"rect" : {"fill" : {"r" : 255,"g" : 0,"b" : 0,"a" : 255},"stroke" :{"r" : 255,"g" : 255,"b" : 255,"hidden" : True},"weight" : 1,"pos" : {"x" : 60, "y" : 240},"size" : {"x" : 20, "y" : 20}}})
+objects.append({"rect" : {"fill" : {"r" : 255,"g" : 255,"b" : 255,"a" : 255}, "stroke" :{"r" : 255, "g" : 255, "b" : 255, "a" : 0}, "weight" : 1, "pos" : {"x" : 240, "y" : 240}, "size" : {"x" : 20, "y" : 20}}})
+objects.append({"rect" : {"fill" : {"r" : 0,"g" : 255,"b" : 0,"a" : 255},"stroke" :{"r" : 255,"g" : 255,"b" : 255,"a" : 0},"weight" : 1,"pos" : {"x" : 440, "y" : 240},"size" : {"x" : 20, "y" : 20}}})
+objects.append({"rect" : {"fill" : {"r" : 255,"g" : 0,"b" : 0,"a" : 255},"stroke" :{"r" : 255,"g" : 255,"b" : 255,"a" : 0},"weight" : 1,"pos" : {"x" : 60, "y" : 240},"size" : {"x" : 20, "y" : 20}}})
 objects.append({"text" : {"font" : "Minecraftia-Regular.ttf","fill" : {"r" : 0,"g" : 255,"b" : 0,"a" : 255},"word" : "Score: 0","size" : 25,"pos" : {"x" : 325, "y" : 50, "z" : 0}}})
 objects.append({"text": {"font" : "Minecraftia-Regular.ttf","fill" : {"r" : 255,"g" : 0,"b" : 0,"a" : 0},"word" : "Hit","size" : 25,"pos" : {"x" : 280, "y" : 50, "z" : 0},"startshow" : 0,"showtime" : 0.5}})
 
@@ -185,74 +185,49 @@ def RENDERRECT(object):
     re = g_c_key(object, "rect")
     if re == None:
         return
-    f = g_c_key(re, "fill")
+    f, w, p, s, st = g_c_key(re, "fill"), g_c_key(re, "weight"), g_c_key(re, "pos"),  g_c_key(re, "size"),  g_c_key(re, "stroke")
     r, g, b, a = g_c_key(f, "r"), g_c_key(f, "g"), g_c_key(f, "b"), g_c_key(f, "a")
-    w = g_c_key(re, "weight")
-    p = g_c_key(re, "pos")
-    s = g_c_key(re, "size")
-    st = g_c_key(re, "stroke")
-    rst, gst, bst, = g_c_key(st, "r"), g_c_key(st, "g"), g_c_key(st, "b")
-    hidden = g_c_key(re, ("stroke", "hidden"))
-    if hidden:
-        noStroke()
-    else:
-        stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255)
-        
+    rst, gst, bst, ast = g_c_key(st, "r"), g_c_key(st, "g"), g_c_key(st, "b"), g_c_key(st, "a")
     x, y, sx, sy = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(s, "x"), g_c_key(s, "y")
-    if x != None and y != None and sx != None and sy != None:
-        fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-        strokeWeight(w if w != None else 1)
-        rect(x, y, sx, sy)
+    strokeWeight(w if w != None else 1)
+    fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
+    stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255, ast if ast != None else 255)
+    rect(x if x != None else 0, y if y != None else 0, sx if sx != None else 0, sy if sy != None else 0)
+
             
 def RENDERTEXT(object):
     global objects
     t = g_c_key(object, "text")
     if t == None:
         return
-    word = g_c_key(t, "word")
-    s = g_c_key(t, "size")
+    word, s, f = g_c_key(t, "word"), g_c_key(t, "size"), g_c_key(t, "font")
     r, g, b, a = g_c_key(t, ("fill", "r")),  g_c_key(t, ("fill", "g")), g_c_key(t, ("fill", "b")), g_c_key(t, ("fill", "a"))
-    x, y, z = g_c_key(t, ("pos", "x")), g_c_key(t, ("pos", "y")), g_c_key(t, ("pos", "z"))
-    f = g_c_key(t, "font")
-    
-    start, tim = g_c_key(t, "startshow"), g_c_key(t, "showtime")
-    a_lerp = 255
+    x, y, z, F = g_c_key(t, ("pos", "x")), g_c_key(t, ("pos", "y")), g_c_key(t, ("pos", "z")), createFont(f if f != None else "", 16)
+    a_lerp, start, tim  = 255, g_c_key(t, "startshow"), g_c_key(t, "showtime")
     if start != None and tim != None:
         if time.time() - start > tim:
             return#WILL NOT DRAW TEXT IF NOT SHOWING
         elif time.time() - start > (tim + 0.0)/2:#FADE HIDE AFFECT
             a_lerp = 255 - ((255*(time.time() - start)/tim) if tim > 0 else 0)
-            
         else:#FADE SHOW AFFECT
             a_lerp = 255/(tim/(time.time() - start)) if (time.time() - start) > 0 else 0
-        
-
-
-    F = createFont(f if f != None else "", 16)
     textFont(F)
-    if a_lerp != 255:
-        a = a_lerp
+    a = a_lerp if a_lerp != 255 else a
     fill(r if r != None else 255, g if g != None else 255, z if z != None else 255, a if a != None else 255)
     textSize(s if s != None else 12)
     text(word if word != None else "PLACEHOLDER", x if x != None else 0, y if y != None else 0, z if z != None else 0)            
+           
 
 def RENDERIMAGE(object):
     global objects
     img = g_c_key(object, "image")
     if img == None:
         return
-    img_name = g_c_key(img, "name")
-    img_size = g_c_key(img, "size")
-    x = g_c_key(img, ("pos","x"))
-    y = g_c_key(img, ("pos","y"))
-    sx = g_c_key(img, ("size","x"))
-    sy = g_c_key(img, ("size","y"))
-    if img_name != None and x != None and y != None and sx != None and sy != None:
-        r,g,b = g_c_key(img, ("tint", "r")), g_c_key(img, ("tint", "g")), g_c_key(img, ("tint", "b"))
-        a = g_c_key(img, ("tint", "a"))
-        
-        tint(r if r != None else 0, g if g != None else 0, b if b != None else 0, a if a != None else 255)
-        image(loadImage(img_name), x, y, sx, sy)          
+    img_name, img_size  = g_c_key(img, "name"), g_c_key(img, "size")
+    x, y, sx, sy = g_c_key(img, ("pos","x")),  g_c_key(img, ("pos","y")), g_c_key(img, ("size","x")), g_c_key(img, ("size","y"))
+    r,g,b,a = g_c_key(img, ("tint", "r")), g_c_key(img, ("tint", "g")), g_c_key(img, ("tint", "b")), g_c_key(img, ("tint", "a"))    
+    tint(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255)
+    image(loadImage(img_name if img_name != None else ""), x if x != None else 0, y if y != None else 0, sx if sx != None else 0, sy)              
         
 def draw():
     global objects, playing
