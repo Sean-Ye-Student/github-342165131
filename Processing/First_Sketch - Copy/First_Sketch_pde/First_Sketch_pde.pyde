@@ -28,9 +28,8 @@ def RENDERIMAGE(object):
     img = g_c_key(object, "image")
     if img == None:
         return
-    img_name, img_size  = g_c_key(img, "name"), g_c_key(img, "size")
-    x, y, sx, sy = g_c_key(img, ("pos","x")),  g_c_key(img, ("pos","y")), g_c_key(img, ("size","x")), g_c_key(img, ("size","y"))
-    r,g,b,a = g_c_key(img, ("tint", "r")), g_c_key(img, ("tint", "g")), g_c_key(img, ("tint", "b")), g_c_key(img, ("tint", "a"))    
+    kys = ("name", "size", ("pos", "x"), ("pos", "y"), ("size", "x"), ("size", "y"), ("tint", "r"), ("tint", "g"), ("tint", "b"), ("tint", "a"))
+    img_name, img_size, x, y, sx, sy, r, g, b, a = map(None, (g_c_key(img, ky) for ky in kys))
     tint(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255)
     image(loadImage(img_name if img_name != None else ""), x if x != None else 0, y if y != None else 0, sx if sx != None else 0, sy)          
 
@@ -38,10 +37,9 @@ def RENDERLINE(object):
     global objects
     l = g_c_key(object, "line")
     if l == None:
-        return            
-    r, g, b, a = g_c_key(l, "r"), g_c_key(l, "g"), g_c_key(l, "b"), g_c_key(l, "a")
-    w, p, p2 = g_c_key(l, "weight"), g_c_key(l, "pos"), g_c_key(l, "pos2")
-    x, y, x2, y2 = g_c_key(p, "x"), g_c_key(p, "y"), g_c_key(p2, "x"), g_c_key(p2, "y")
+        return
+    kys = ("r", "g", "b", "a", "weight", "pos", "pos2", ("pos", "x"), ("pos", "y"), ("pos2", "x"), ("pos2", "y"))
+    r, g, b, a, w, p, p2, x, y, x2, y2  = map(None, (g_c_key(l, ky) for ky in kys))
     stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
     strokeWeight(w if w != None else 1)
     line(x if x != None else 0, y if y != None else 0, x2 if x2 != None else 0, y2 if y2 != None else 0)
@@ -57,11 +55,10 @@ def mousePressed():
     for object in objects:
         button = g_c_key(object, "button")
         if button != None:
-            x, y = g_c_key(button, ("area", "pos", "x")), g_c_key(button, ("area", "pos", "y"))
-            x2, y2 = g_c_key(button, ("area", "pos2", "x")), g_c_key(button, ("area", "pos2", "y"))
+            kys = (("area", "pos", "x"), ("area", "pos", "y"), ("area", "pos2", "x"), ("area", "pos2", "y"))
+            x, y, x2, y2 = map(None, (g_c_key(button, ky) for ky in kys))
             if min(x, x2) <= mouseX <= max(x, x2) and min(y, y2) <= mouseY <= max(x, x2):
-                f = g_c_key(button, "function")
-                m = g_c_key(button, "mouse") 
+                f, m = g_c_key(button, "function"), g_c_key(button, "mouse") 
                 if f != None and mouseButton == m:
                     f()
 

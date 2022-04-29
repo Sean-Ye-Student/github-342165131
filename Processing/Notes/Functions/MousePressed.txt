@@ -2,10 +2,10 @@ def mousePressed():
     for object in objects:
         button = g_c_key(object, "button")
         if button != None:
-            x, y = g_c_key(button, ("area", "pos", "x")), g_c_key(button, ("area", "pos", "y"))
-            x2, y2 = g_c_key(button, ("area", "pos2", "x")), g_c_key(button, ("area", "pos2", "y"))
+            kys = (("area", "pos", "x"), ("area", "pos", "y"), ("area", "pos2", "x"), ("area", "pos2", "y"))
+            x, y, x2, y2 = map(None, (g_c_key(button, ky) for ky in kys))
             if min(x, x2) <= mouseX <= max(x, x2) and min(y, y2) <= mouseY <= max(x, x2):
-                f = g_c_key(button, "function")
-                if f != None:
+                f, m = g_c_key(button, "function"), g_c_key(button, "mouse") 
+                if f != None and mouseButton == m:
                     f()
             
