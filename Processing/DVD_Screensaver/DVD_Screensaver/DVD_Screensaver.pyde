@@ -1,49 +1,7 @@
 import time
 objects = []
-# objects.append(
-# {"image" : {
-#   "name" : "dvd-logo.png",
-#   "size" : {"x" : 100, "y" : 45},
-#   "pos" : {"x" : 0, "y" : 0},
-#   "tint" : {"r" : 0, "g" : 255, "b" : 255, "a" : 255}
-# }})
-
-objects.append(
-{"image" : {
-  "name" : "dvd-logo.png",
-  "size" : {"x" : 100, "y" : 45},
-  "pos" : {"x" : 0, "y" : 0},
-  "tint" : {"r" : 0, "g" : 255, "b" : 255, "a" : 255}
-  },
-"body" : {        
-"velocity" : {"x" : 1, "y" : 1},
-"mass" : 1,
-"weld" : ("image", "box collider")
-},
-
-"box collider" : {
-"pos" : {"x" : 0, "y" : 0}, 
-"size" : {"x" : 100, "y": 45}
-}})
-
-objects.append(
-{"image" : {
-  "name" : "dvd-logo.png",
-  "size" : {"x" : 100, "y" : 45},
-  "pos" : {"x" : 400, "y" : 455},
-  "tint" : {"r" : 0, "g" : 255, "b" : 0, "a" : 255}
-  },
-"body" : {        
-"velocity" : {"x" : -1, "y" : -1},
-"mass" : 1,
-"weld" : ("image", "box collider")
-},
-
-"box collider" : {
-"pos" : {"x" : 400, "y" : 455}, 
-"size" : {"x" : 100, "y": 45}
-}})
-
+objects.append({"image" : {"name" : "dvd-logo.png","size" : {"x" : 100, "y" : 45},"pos" : {"x" : 0, "y" : 0},"tint" : {"r" : 0, "g" : 255, "b" : 255, "a" : 255}},"body" : {"velocity" : {"x" : 1, "y" : 1},"mass" : 1,"weld" : ("image", "box collider")},"box collider" : {"pos" : {"x" : 0, "y" : 0}, "size" : {"x" : 100, "y": 45}}})
+objects.append({"image" : {"name" : "dvd-logo.png","size" : {"x" : 100, "y" : 45},"pos" : {"x" : 400, "y" : 455},"tint" : {"r" : 0, "g" : 255, "b" : 0, "a" : 255}},"body" : {"velocity" : {"x" : -1, "y" : -1},"mass" : 1,"weld" : ("image", "box collider")},"box collider" : {"pos" : {"x" : 400, "y" : 455}, "size" : {"x" : 100, "y": 45}}})
 objects.append({"box collider" : {"pos" : {"x" : -6, "y" : -1}, "size" : {"x" : 5, "y": 501}}})#LEFT
 objects.append({"box collider" : {"pos" : {"x" : -1, "y" : -6}, "size" : {"x" : 501, "y": 5}}})#TOP
 objects.append({"box collider" : {"pos" : {"x" : 501, "y" : -1}, "size" : {"x" : 5, "y": 501}}})#RIGHT
@@ -61,9 +19,8 @@ def g_c_key(d, kys):
         else:
             return None
 on_line = lambda s, m, e: min(s, e) <= m <= max(s, e)
-aaa = []
 def RUNCOLLISIONS():#simplified does not account for already passed colliders A.K.A fast collisions
-    global objects, in_area, aaa
+    global objects, in_area
     collided = []
     collidable = tuple(i for i in range(len(objects)) if g_c_key(objects[i], "box collider"))
     for i in range(len(collidable)):
@@ -75,11 +32,8 @@ def RUNCOLLISIONS():#simplified does not account for already passed colliders A.
             x, y, xs, ys = map(lambda n : n if n != None else 0, (g_c_key(objects[i]["box collider"], ky) for ky in kys))
             x2, y2, xs2, ys2 = map(lambda n : n if n != None else 0, (g_c_key(objects[ii]["box collider"], ky) for ky in kys))            
             xv, yv, xv2, yv2 = map(lambda n : n if n != None else 0, (g_c_key(objects, ky) for ky in kys2))
-            #m, m2 = yv/xv if xv != 0 else 0, yv2/xv2 if xv2 != 0 else 0
-            #aaa = ((x, y, 0), (x + xs, y + ys, 0), (x2, y2, 0 if y2 + ys2 == y or y2 == y + ys else 255), (x2 + xs2, y2 + ys2, 255))
             swap_x = (on_line(y, y2, y + ys) or on_line(y, y2 + ys2, y + ys)) and (x2 + xs2 == x or x2 == x + xs)
             swap_y = (on_line(x, x2, x + xs) or on_line(x, x2 + xs2, x + xs)) and (y2 + ys2 == y or y2 == y + ys)
-            
             
             if not(swap_x or swap_y):
                 continue
@@ -90,29 +44,13 @@ def RUNCOLLISIONS():#simplified does not account for already passed colliders A.
                 if o:
                     objects[i]["body"]["velocity"]["x"] = -xv if xv else xv
                 if ooo:
-                    objects[ii]["body"]["velocity"]["x"] = -xv2 if xv2 else xv2
-                     
-            
+                    objects[ii]["body"]["velocity"]["x"] = -xv2 if xv2 else xv2            
             if swap_y:
                 if oo:
                     objects[i]["body"]["velocity"]["y"] = -yv if yv else yv
                 if oooo:
                     objects[ii]["body"]["velocity"]["y"] = -yv2 if yv2 else yv2
-            
-            # sx, sy = False, False
-            # if m == 1:
-            #     sx, sy = True, True
-            # elif m * (x + xs2) >= y2 + ys2:
-            #     sx = True
-            # else:
-            #     sy = True
-            # if xv and yv:
-            #     objects[i]["body"]["velocity"]["x"] = -xv if xv else xv
-            #     objects[i]["body"]["velocity"]["y"] = -yv if yv else yv
-            # if xv2 and yv2:
-            #     objects[ii]["body"]["velocity"]["x"] = -xv2 if xv2 else xv2
-            #     objects[ii]["body"]["velocity"]["y"] = -yv2 if yv2 else yv2
-
+                    
 def RENDERIMAGE(object):
     global objects
     img = g_c_key(object, "image")
@@ -138,21 +76,14 @@ def RENDERBODY(object):
                 object[ky]["pos"]["x"] = (x + vx if x != None and vx != None else 0) + 0.0
             if y != None:
                 object[ky]["pos"]["y"] = (y + vy if y != None and vy != None else 0) + 0.0
-    
-    
 def setup():
-    background(255)
+    background(0)
     size(500, 500)
 
 def draw():
-    global objects, asdfaef
+    global objects
     setup()
     RUNCOLLISIONS()
-    for p in aaa:
-        if len(p) < 2:
-            continue
-        fill(p[2])
-        rect(int(p[0]), int(p[1]), 10, 10)
     for object in objects:
         RENDERIMAGE(object)
         RENDERBODY(object)
