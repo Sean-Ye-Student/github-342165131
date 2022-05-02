@@ -1,3 +1,4 @@
+types = {"str" : type(""), "list" : type([]), "tuple" : type(()), "dict" : type({})}
 def g_c_key(d, kys):
     global types, objects
     new_d = d
