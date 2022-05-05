@@ -1,76 +1,104 @@
 import time
-objects = []
-types = {"str" : type(""), "list" : type([]), "tuple" : type(()), "dict" : type({})}
-def g_c_key(d, kys):
-    global types, objects
-    new_d = d
-    kys = (kys,) if not(type(kys) == types["tuple"]) else kys
-    for k in kys:
-        if (type(new_d) == types["list"] and k < len(new_d) and new_d[k]) or (type(new_d) == types["dict"] and k in new_d.keys()):
-            if k == kys[len(kys) - 1]:
-                return new_d[k]
-            new_d = new_d[k]
-        else:
-            return None
+import random#Import libraries and modules
+add_library('minim')
+minim = Minim(this)
+lines = []#Arrays used to store object infomation
+clouds = []
+confettis = []
 
-def RENDERIMAGE(object):
-    global objects
-    img = g_c_key(object, "image")
-    if img == None:
-        return
-    kys = ("name", "size", ("pos", "x"), ("pos", "y"), ("size", "x"), ("size", "y"), ("tint", "r"), ("tint", "g"), ("tint", "b"), ("tint", "a"))
-    img_name, img_size, x, y, sx, sy, r, g, b, a = map(None, (g_c_key(img, ky) for ky in kys))
-    tint(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255)
-    image(loadImage(img_name if img_name != None else ""), x if x != None else 0, y if y != None else 0, sx if sx != None else 0, sy)          
-
-def RENDERLINE(object):
-    global objects
-    l = g_c_key(object, "line")
-    if l == None:
-        return
-    kys = ("r", "g", "b", "a", "weight", "pos", "pos2", ("pos", "x"), ("pos", "y"), ("pos2", "x"), ("pos2", "y"))
-    r, g, b, a, w, p, p2, x, y, x2, y2  = map(None, (g_c_key(l, ky) for ky in kys))
-    stroke(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-    strokeWeight(w if w != None else 1)
-    line(x if x != None else 0, y if y != None else 0, x2 if x2 != None else 0, y2 if y2 != None else 0)
-
-def setup():
-    background(100)
+def setup():#Loads the screen and the song
+    global song
     size(420, 420)
-    
+    song = minim.loadFile("Song.mp3")
+    song.play()
     #default settings
+s = 15#list of clouds and reletive scaling
+clouds.append({"image" : {"speed" : 5, "name" : "cloud.png", "pos" : {"x" : 50, "y" : 0}, "size" : {"x" : 841/(100/s), "y" : 813/(100/s)} }})
+clouds.append({"image" : {"speed" : 12, "name" : "cloud1.png", "pos" : {"x" : 150, "y" : 100}, "size" : {"x" : 618/(100/s), "y" : 554/(100/s)} }})
+clouds.append({"image" : {"speed" : 8, "name" : "cloud2.png", "pos" : {"x" : 267, "y" : 80}, "size" : {"x" : 753/(100/s), "y" : 616/(100/s)} }})
+clouds.append({"image" : {"speed" : 16, "name" : "cloud3.png", "pos" : {"x" : 300, "y" : 30}, "size" : {"x" : 289/(100/s), "y" : 275/(100/s)} }})
+message = {"speed" : 6, "pos" : {"x" : 420, "y" : 50}, "size" : 23}#message properties
 
 
-objects.append({"image" : 
-                {"name" : "night.png",
-                "size" : {"x" : 800, "y" : 600},
-                 "pos" : {"x" : 0, "y" : -600}
-}})
-objects.append({"image" :
-                {"name": "day.png", 
-                 "size" : {"x" : 800, "y" : 600},
-                 "tint" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},
-                 "pos" : {"x" : 0, "y" : -600}
-}})
+
+
 last_change_day = 0
-turn_night = False
-time_cycle = 30
+turn_night = False#Day settings
+days_past = 0
+time_cycle = 30#How many seconds a cycle lasts
 x_offset = 0
+paused = False
+
+def keyPressed():#Controls the song
+    global song, paused
+    if key == "p":
+        paused = not(paused)
+    if key == "r":
+        song.rewind()
+    if paused:
+        song.pause()
+    else:
+        song.play()
+
 def draw():
-    global objects, last_change_day, time_cycle, turn_night, x_offset
-    setup()
-    print(time.time() - last_change_day, time_cycle)
+    global objects, last_change_day, time_cycle, turn_night, x_offset, confettis, message, days_past
     time_elapsed = time.time() - last_change_day 
-    if time_elapsed > time_cycle:
+    if time_elapsed >= time_cycle:#Logic for day cycle
         turn_night = not(turn_night)
         last_change_day = time.time()
-    # DAY AND NIGHT CAN HAVE OBVIOUS CREASE IN THE MIDDLE BETWEENM THE TWO
-    x_offset += 1
-    print(x_offset)
-    #255 - (time_elapsed * (255.0/time_cycle)) if turn_night else time_elapsed * (255.0/time_cycle))
-    copy(loadImage(objects[1]["image"]["name"]), x_offset, 90, 420, 420, 0, 0, 420, 420)
+        days_past += 1
+        time_elapsed = 0
+        
+        for i in range(250):
+            #Creates randomly generated confetti that have different colors, positions and speeds. 
+            confettis.append({"touched ground" : -1, "speed" : random.randint(1, 5), "fill" : {"r" : random.randint(0, 2) * 127.5, "g" : random.randint(0, 2) * 127.5, "b" : random.randint(0, 2) * 127.5, "a" : 255}, "fill2" : {"r" : random.randint(0, 2) * 127.5, "g" : random.randint(0, 2) * 127.5, "b" : random.randint(0, 2) * 127.5, "a" : 255}, "size" : {"x" : random.randint(10, 20), "y" : random.randint(10, 20)}, "pos" : {"x" : random.randint(0, 420), "y" :  random.randint(0, 100)}})
+            
+    x_offset = int(600 * ((time_elapsed + 0.0)/time_cycle))
+    if turn_night:#Controls the background
+        copy(loadImage("day.png"), x_offset, 90, 420, 420, 0, 0, 420, 420)
+        copy(loadImage("night.png"), x_offset - 600, 90, 420, 420, 0, 0, 420, 420)
+    else:
+        copy(loadImage("night.png"), x_offset, 90, 420, 420, 0, 0, 420, 420)
+        copy(loadImage("day.png"), x_offset - 600, 90, 420, 420, 0, 0, 420, 420)
     
-    # fill(255, 255, 255)
-    for object in objects:
-        RENDERIMAGE(object) #REDERS IMAGES 
-        RENDERLINE(object) #REDERS LINES     
+    remove_confettis = []
+    for i, c in enumerate(confettis):#Runs logic for all the confetti, also adds them to remove array when it reaches the ground after 5 seconds
+        f = c["fill"] if ((time.time()+0.0/10) - round(time.time()+0.0/10)) > 0 else c["fill2"]
+        fill(f["r"], f["g"], f["b"], f["a"])
+        c["pos"]["y"] += c["speed"]
+        if c["pos"]["y"] + c["size"]["y"] > 420:
+            c["pos"]["y"] = 420 - c["size"]["y"]            
+            c["touched ground"] = time.time() if c["touched ground"] < 0 else c["touched ground"]
+            if time.time() - c["touched ground"] >= 5:
+                remove_confettis.append(i)
+        rect(c["pos"]["x"], c["pos"]["y"], c["size"]["x"], c["size"]["y"])
+    r = 0
+    i = 0
+    while len(remove_confettis) > 0: #Deletes selected confetti in the array
+        if i == remove_confettis[0]:
+            confettis.pop(i - r)
+            remove_confettis.pop(0)
+            r += 1
+        else:
+            i += 1
+    if turn_night: #Toggles the sun and moon depending on the time of day
+        fill(254, 241, 125)  
+        ellipse(100,75,100, 100)
+        image(loadImage("sean.png"), 70, 25, 59, 100)
+    else:
+        fill(184, 184, 184)  
+        ellipse(100,75,100, 100)
+        image(loadImage("sean2.png"), 70, 25, 59, 100)
+        
+    for cloud in clouds: #Runs logic for clouds
+        img = cloud["image"]
+        img["pos"]["x"] -= img["speed"] 
+        if img["pos"]["x"] < -img["size"]["x"]:
+            img["pos"]["x"] = 420
+        image(loadImage(img["name"]), img["pos"]["x"], img["pos"]["y"], img["size"]["x"], img["size"]["y"])
+
+    if days_past > 3: #Makes the message appear after 3 daytime cycles
+        fill(255, 255, 0)
+        textFont(createFont("Minecraftia-Regular.ttf", message["size"]))
+        message["pos"]["x"] = message["pos"]["x"] - message["speed"] if message["pos"]["x"] > -420 else 420
+        text("Coding before midnight on vacation!", message["pos"]["x"], message["pos"]["y"])
