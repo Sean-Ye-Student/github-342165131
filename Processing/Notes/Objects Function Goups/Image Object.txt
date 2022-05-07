@@ -1,17 +1,29 @@
-def RENDERIMAGE(object):
-    global objects
-    img = g_c_key(object, "image")
-    if img == None:
+img_kys = ("name", "size", "pos", "fill", "animation")
+fallback = lambda dic, ky, default: dic[ky] if dic != None else default
+def RENDERIMAGE(object, enabled_keys):
+    img = object["image"]
+    img_name, img_size, pos, f, anim = map(None, (img[ky] if ky in enabled_keys else None for ky in img_kys))
+    if anim != None:
+        fd, tf = anim["frame_duration"], anim["total_frames"], 
+        elapsed = (time.time() - anim["start"]) % (tf * fd) if tf * fd > 0 else 1
+        img_name = anim["file_index"] + str(int(elapsed/fd if fd > 0 else 1)) + anim["file_type"]
+        
+    if img_name == None:
         return
-    kys = ("name", "size", ("pos", "x"), ("pos", "y"), ("size", "x"), ("size", "y"), ("tint", "r"), ("tint", "g"), ("tint", "b"), ("tint", "a"))
-    img_name, img_size, x, y, sx, sy, r, g, b, a = map(None, (g_c_key(img, ky) for ky in kys))
-    tint(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255)
-     image(loadImage(img_name if img_name != None else ""), x if x != None else 0, y if y != None else 0, sx if sx != None else 0, sy if sy != None else 0)
 
+    tint(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), fallback(f, "a", 255))
+    image(loadImage(img_name), fallback(pos, "x", 0), fallback(pos, "y", 0), fallback(img_size, "x", 100), fallback(img_size, "y", 100))   
 
 "image" : {
-	"name" : "name goes here",
+	"name" : "name goes here", #Not required if using an animation
 	"size" : {"x" : 0, "y" : 0},
 	"pos" : {"x" : 0, "y" : 0},
-	"tint" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}
+	"tint" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},
+	"animation" : {
+		"file_index" : "pvz/football/", #Make sure to rename all frames to be 0-#frames
+		"file_type" : ".png",
+		"start" : 0, #Change to current time to play animation from start
+		"total_frames" : 10, #Number of frames in folder
+		"frame_duration" : 0.09#delay between frames
+	}
 },

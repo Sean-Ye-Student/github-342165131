@@ -1,0 +1,3 @@
+#faster version of g_c_key, will default on fallback value if key is missing.
+fallback = lambda dic, ky, default: dic[ky] if dic != None else default
+
