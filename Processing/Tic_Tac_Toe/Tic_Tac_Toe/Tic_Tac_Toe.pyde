@@ -5,6 +5,7 @@ images = []
 img_kys = ("name", "size", "pos", "fill", "animation")
 fallback = lambda dic, ky, default: dic[ky] if dic != None else default
 sounds = {"intro" : {"minim" : "HOME - Dream Head.mp3", "repeat" : -1, "play_from_start" : False, "isolate" : True, "group" : 0}}
+
 def RENDERIMAGE(object, enabled_keys):
     img = object["image"]
     img_name, img_size, pos, f, anim = map(None, (img[ky] if ky in enabled_keys else None for ky in img_kys))
@@ -64,23 +65,31 @@ def setup():
     PlaySound("intro", ("minim", "repeat", "play_from_start", "isolate", "group"))
     #default settings
 turn = True #On X players turn
+combos = tuple((i, i + 1, i + 2) for i in range(3))
+combos += tuple((i, i + 3, i + 6) for i in range(3)) 
+combos += tuple([tuple([0, 4, 8]), tuple([2, 4, 6])])
+print(combos)
 def draw():
     global grid, turn
     if mouseButton == LEFT:
         x, y, is_x = mouseX, mouseY, turn
+        xc, yc = 0, 0
         for xg in range(len(grid)):
             for yg, state in enumerate(grid[xg]):
                 if xg * 200 < x < (xg + 1) * 200 and yg * 200 < y < (yg + 1) * 200 and state == None:
                     grid[xg][yg] = turn
+                    xc, yc = xg, yg
                     turn = not(turn)
-        
+                    continue
+        for combo in combos:
+            for i in combo:
+                type 
     
     background(255)
     for x in range(len(images)):
         for y in range(len(images[x])):
             a = "x/" if grid[x][y] else "o/"
             a = "n/" if grid[x][y] == None else a
-            print(grid)
             images[x][y]["image"]["animation"]["file_index"] = a
             RENDERIMAGE(images[x][y], ("size", "pos", "animation")) #REDERS IMAGES 
     
