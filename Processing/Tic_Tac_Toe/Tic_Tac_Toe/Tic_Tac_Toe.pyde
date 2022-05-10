@@ -65,9 +65,9 @@ def setup():
     PlaySound("intro", ("minim", "repeat", "play_from_start", "isolate", "group"))
     #default settings
 turn = True #On X players turn
-combos = tuple((i, i + 1, i + 2) for i in range(3))
-combos += tuple((i, i + 3, i + 6) for i in range(3)) 
-combos += tuple([tuple([0, 4, 8]), tuple([2, 4, 6])])
+combos = tuple(tuple([(0, y), (1, y), (2, y)]) for y in range(3))
+combos += tuple(tuple([(x, 0), (x, 1), (x, 2)]) for x in range(3)) 
+combos += tuple([tuple([(0, 0), (1, 1), (2, 2)]), tuple([(2, 0), (1, 1), (1, 2)])])
 print(combos)
 def draw():
     global grid, turn
@@ -82,9 +82,13 @@ def draw():
                     turn = not(turn)
                     continue
         for combo in combos:
-            for i in combo:
-                type 
-    
+            t = True
+            for coor in combo:
+                if not(turn) != grid[coor[0]][coor[1]]
+                    t = False
+                    break
+            if t:
+               print("x" if not(turn) else "o", "won!")
     background(255)
     for x in range(len(images)):
         for y in range(len(images[x])):
