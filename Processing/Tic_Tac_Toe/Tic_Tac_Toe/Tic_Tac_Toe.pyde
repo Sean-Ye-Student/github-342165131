@@ -146,7 +146,7 @@ def draw():
                 score[not(turn)] += 1
                 score_message["text"]["word"] = str(score[True]) + ":" + str(score[False]) 
                 message["text"]["fill"]["r"], message["text"]["fill"]["g"], message["text"]["fill"]["b"] = map(None, (250, 50, 50) if not(turn) else (50, 250, 50))
-                message["text"]["word"] = "Player " + ("x" if not(turn) else "o") + " has Won!"
+                message["text"]["word"] = "Player " + ("X" if not(turn) else "O") + " has Won!"
                 message["text"]["startshow"] = time.time()
                 reset = time.time() + 5
                 break
