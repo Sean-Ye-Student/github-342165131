@@ -83,13 +83,17 @@ for x in range(3):
 combos = tuple(tuple([(0, y), (1, y), (2, y)]) for y in range(3))
 combos += tuple(tuple([(x, 0), (x, 1), (x, 2)]) for x in range(3)) 
 combos += tuple([tuple([(0, 0), (1, 1), (2, 2)]), tuple([(2, 0), (1, 1), (0, 2)])])
-reset = -1
+reset, prevent_input = -1, -1
 message = {"text" : { "font" : "fonts/comic.ttf", "fill" : {"r" : 0, "g" : 0, "b" : 0, "a" : 255},"word" : "PLAYER X HAS WON", "size" : 45, "showtime" : 5, "startshow" : 0, "pos" : {"x" : 124, "y" : 280, "z" : 0}}}
+max_score_message =  {"text" : { "font" : "fonts/comic.ttf", "fill" : {"r" : 0, "g" : 0, "b" : 255, "a" : 255},"word" : "", "size" : 20, "pos" : {"x" : 0, "y" : 318, "z" : 0}}}
 score_message = {"text" : { "font" : "fonts/comic.ttf", "fill" : {"r" : 0, "g" : 0, "b" : 0, "a" : 255},"word" : "0:0", "size" : 45, "pos" : {"x" : 265, "y" : 318, "z" : 0}}}
 grid = [[None, None, None] for i in range(3)]
 score = {True : 0, False : 0}
 turn = True #On X players turn
-
+game_started = False
+max_score, is_pressing = 3, False
+max_score_message["text"]["word"] = "Playing to " + str(max_score)
+numbers = [str(i) for i in range(10)]
 def setup():
     size(600,600)
     minim = Minim(this)
@@ -97,10 +101,17 @@ def setup():
         sounds[ky]["minim"] = minim.loadFile("sounds/" + sounds[ky]["minim"])
     PlaySound("intro", ("minim", "repeat", "play_from_start", "isolate", "group"))
     #default settings
-
+    
+def keyPressed():
+    global max_score, max_score_message 
+    for i, string in enumerate(numbers):
+        if string == key:
+            max_score = max_score * 10 + i
+            max_score_message["text"]["word"] = "Playing til " + str(max_score)
+            return
 
 def draw():
-    global grid, turn, score, reset, message
+    global grid, turn, score, max_score, is_pressing, reset, message, prevent_input
     background(255)
     for x in range(len(images)):
         for y in range(len(images[x])):
@@ -114,10 +125,16 @@ def draw():
             strokeWeight(20)
             line(x, y, x, y + 600)
             line(x, y, x + 600, y)
+    RENDERTEXT(max_score_message, ("font", "word", "fill", "pos", "size"))
+    
+    if game_started == False:
+        return
+    
     RENDERTEXT(score_message, ("font", "word", "fill", "pos", "size"))
     RENDERTEXT(message, ("font", "word", "fill", "pos", "size", "startshow", "showtime"))
     RENDERTEXT(message, ("font", "word", "fill", "pos", "size", "startshow", "showtime"))
     RENDERTEXT(message, ("font", "word", "fill", "pos", "size", "startshow", "showtime"))
+    
     if reset > 0: #Make sure things are still being drawn
         if time.time() > reset:
             grid = [[None, None, None] for i in range(3)]
@@ -126,7 +143,8 @@ def draw():
         else:
             return
     
-    if mouseButton == LEFT:
+    if mouseButton == LEFT and (prevent_input < 0 or time.time() > prevent_input):
+        print("detected mouse")
         x, y, is_x = mouseX, mouseY, turn
         xc, yc = 0, 0
         for xg in range(len(grid)):
@@ -149,7 +167,8 @@ def draw():
                 message["text"]["word"] = "Player " + ("X" if not(turn) else "O") + " has Won!"
                 message["text"]["startshow"] = time.time()
                 reset = time.time() + 5
-                break
+                prevent_input = time.time() + 8
+                return
         blanks = False
         for row in grid:
             if None in row:
@@ -161,3 +180,5 @@ def draw():
             message["text"]["fill"]["r"], message["text"]["fill"]["g"], message["text"]["fill"]["b"] = 69, 69, 69
             message["text"]["startshow"] = time.time()
             reset = time.time() + 5
+            prevent_input = time.time() + 8
+            return
