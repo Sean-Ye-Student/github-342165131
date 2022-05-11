@@ -21,6 +21,11 @@ def PlaySound(sound_name, enabled_keys):
         else:
             m.play()
 
+#NOTE That  must be in setup to load the files correctly
+#minim = Minim(this)
+#for ky in sounds:
+#	sounds[ky]["minim"] = minim.loadFile("sounds/" + sounds[ky]["minim"])
+
 PlaySound("sound_name", ("minim", "repeat", "play_from_start", "isolate", "group"))
 
 sounds = {

@@ -1,31 +1,43 @@
-TEXT KEY
+def LERPTEXT(start, tim):
+    a_lerp = 255
+    if start == None or tim == None:
+        return a_lerp
+    if time.time() - start > tim:
+        return 0 #WILL NOT DRAW TEXT IF NOT SHOWING
+    elif time.time() - start > (tim + 0.0)/2:#FADE HIDE AFFECT
+        a_lerp = 255 - ((255*(time.time() - start)/tim) if tim > 0 else 0)
+    else:#FADE SHOW AFFECT
+        a_lerp = 255/(tim/(time.time() - start)) if (time.time() - start) > 0 else 0
+        
+    return int(a_lerp)
 
-def RENDERTEXT(object):
-    global objects
-    t = g_c_key(object, "text")
-    if t == None:
-        return
-    word, s, f = g_c_key(t, "word"), g_c_key(t, "size"), g_c_key(t, "font")
-    r, g, b, a = g_c_key(t, ("fill", "r")),  g_c_key(t, ("fill", "g")), g_c_key(t, ("fill", "b")), g_c_key(t, ("fill", "a"))
-    x, y, z, F = g_c_key(t, ("pos", "x")), g_c_key(t, ("pos", "y")), g_c_key(t, ("pos", "z")), createFont(f if f != None else "", 16)
-    a_lerp, start, tim  = 255, g_c_key(t, "startshow"), g_c_key(t, "showtime")
-    if start != None and tim != None:
-        if time.time() - start > tim:
-            return#WILL NOT DRAW TEXT IF NOT SHOWING
-        elif time.time() - start > (tim + 0.0)/2:#FADE HIDE AFFECT
-            a_lerp = 255 - ((255*(time.time() - start)/tim) if tim > 0 else 0)
-        else:#FADE SHOW AFFECT
-            a_lerp = 255/(tim/(time.time() - start)) if (time.time() - start) > 0 else 0
-    textFont(F)
-    a = a_lerp if a_lerp != 255 else a
-    fill(r if r != None else 255, g if g != None else 255, z if z != None else 255, a if a != None else 255)
-    textSize(s if s != None else 12)
-    text(word if word != None else "PLACEHOLDER", x if x != None else 0, y if y != None else 0, z if z != None else 0)            
+fallback = lambda dic, ky, default: dic[ky] if dic != None else default
+text_kys = ("font", "word", "fill", "pos", "size", "startshow",  "showtime")
+def RENDERTEXT(object, enabled_keys): #object is a dictionary, enabled_keys is a tuple storing all the keys that are in the object (assumed to be there)
+    t = object["text"]
+    font, word, f, pos, s, start, tim = map(None, (t[ky] if ky in enabled_keys else None for ky in text_kys))
+    a_lerp = LERPTEXT(start, tim)
+    a = a_lerp if a_lerp != 255 else fallback(f, "a", 255)
+    #print(start, tim, a_lerp, a)
+    fill(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), a)
+    if font != None:
+        textFont(createFont(font, s if s != None else 12))
+    else:
+        textSize(s if s != None else 12)
 
-"text" : {
-	"font" : "fontfile",
-	"fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},
-	"word" : "PLACEHOLDER",
-	"size" : 12,
-	"pos" : {"x" : 325, "y" : 50, "z" : 0}
+    text(word if word != None else "PLACEHOLDER", fallback(pos, "x", 0), fallback(pos, "y", 0), fallback(pos, "z", 0))            
+
+{"text" : {
+  "font" : "comic.ttf",
+  "fill" : {
+	"r" : 255, 
+	"g" : 255, 
+	"b" : 255, 	
+	"a" : 255 #Will be overrided if the alpha is lerped
+	},
+  "word" : "YAY",#The word displayed
+  "size" : 45,
+  "showtime" : 1, #How long the text will fade in for (will also proceed to fade out at the same time length).
+  "startshow" : 0, #Will lerp the alpha value from this time period. Use time.time()
+  "pos" : {"x" : 20, "y" : 250, "z" : 0}}
 }

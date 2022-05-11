@@ -1,6 +1,6 @@
 img_kys = ("name", "size", "pos", "fill", "animation")
 fallback = lambda dic, ky, default: dic[ky] if dic != None else default
-def RENDERIMAGE(object, enabled_keys):
+def RENDERIMAGE(object, enabled_keys): #object is a dictionary, enabled_keys is a tuple storing all the keys that are in the object (assumed to be there)
     img = object["image"]
     img_name, img_size, pos, f, anim = map(None, (img[ky] if ky in enabled_keys else None for ky in img_kys))
     if anim != None:
