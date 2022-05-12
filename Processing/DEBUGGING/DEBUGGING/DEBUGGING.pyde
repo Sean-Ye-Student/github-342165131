@@ -1,43 +1,39 @@
 import time
 objects = []
 
-def LERPTEXT(start, tim):
-    a_lerp = 255
-    if start == None or tim == None:
-        return a_lerp
-    if time.time() - start > tim:
-        return 0 #WILL NOT DRAW TEXT IF NOT SHOWING
-    elif time.time() - start > (tim + 0.0)/2:#FADE HIDE AFFECT
-        a_lerp = 255 - ((255*(time.time() - start)/tim) if tim > 0 else 0)
-    else:#FADE SHOW AFFECT
-        a_lerp = 255/(tim/(time.time() - start)) if (time.time() - start) > 0 else 0
-        
-    return int(a_lerp)
-
+img_kys = ("name", "size", "pos", "fill", "animation")
 fallback = lambda dic, ky, default: dic[ky] if dic != None else default
-text_kys = ("font", "word", "fill", "pos", "size", "startshow",  "showtime")
-def RENDERTEXT(object, enabled_keys):
-    t = object["text"]
-    font, word, f, pos, s, start, tim = map(None, (t[ky] if ky in enabled_keys else None for ky in text_kys))
-    a_lerp = LERPTEXT(start, tim)
-    a = a_lerp if a_lerp != 255 else fallback(f, "a", 255)
-    #print(start, tim, a_lerp, a)
-    fill(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), a)
-    if font != None:
-        textFont(createFont(font, s if s != None else 12))
-    else:
-        textSize(s if s != None else 12)
+def RENDERIMAGE(object, enabled_keys): #object is a dictionary, enabled_keys is a tuple storing all the keys that are in the object (assumed to be there)
+    img = object["image"]
+    img_name, img_size, pos, f, anim = map(None, (img[ky] if ky in enabled_keys else None for ky in img_kys))
+    if anim != None:
+        fd, tf = anim["frame_duration"], anim["total_frames"], 
+        elapsed = (time.time() - anim["start"]) % (tf * fd) if tf * fd > 0 else 1
+        img_name = anim["file_index"] + str(int(elapsed/fd if fd > 0 else 1)) + anim["file_type"]
+        
+    if img_name == None:
+        return
 
-    text(word if word != None else "PLACEHOLDER", fallback(pos, "x", 0), fallback(pos, "y", 0), fallback(pos, "z", 0))            
-objects.append({"text" : {
-  "font" : "comic.ttf",
-  "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},
-  "word" : "PLAYER X HAS WON",
-  "size" : 45,
-  "showtime" : 1,
-  "startshow" : time.time(),
-  "pos" : {"x" : 20, "y" : 250, "z" : 0}}
-})
+    tint(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), fallback(f, "a", 255))
+    image(loadImage(img_name), fallback(pos, "x", 0), fallback(pos, "y", 0), fallback(img_size, "x", 100), fallback(img_size, "y", 100))   
+
+def HELLOWORLD():
+  print("Hello world")
+
+button_kys = ("area", "function", "mouse")
+fallback = lambda dic, ky, default: dic[ky] if dic != None else default
+def mousePressed():
+    for object in objects:
+        button = object["button"]
+        a, f, m = fallback(button, "area", None), fallback(button, "function", None), fallback(button, "mouse", None)
+        p, p2 = fallback(a, "pos", None), fallback(a, "pos2", None)
+        x, y, x2, y2 = fallback(p, "x", 0), fallback(p, "y", 0), fallback(p2, "x", 0), fallback(p2, "y", 0)
+        if min(x, x2) <= mouseX <= max(x, x2) and min(y, y2) <= mouseY <= max(x, x2):
+            if f != None and mouseButton == m:
+                f()
+
+objects.append({"image" : {"name" : "play.png", "size" : {"x" : 100, "y" : 50}, "pos" : {"x" : 0, "y" : 0}},
+                "button" : {"mouse" : LEFT, "function" : HELLOWORLD, "area" : {"pos" : {"x" : 0, "y" : 0}, "pos2" : {"x" : 100, "y" : 50}}}})
 
 def setup():
 
@@ -47,6 +43,4 @@ def draw():
     global objects
     background(100)
     for object in objects:
-        RENDERTEXT(object, ("font", "word", "fill", "size", "pos", "showtime", "startshow")) #REDERS text
-        if objects[0]["text"]["startshow"] + objects[0]["text"]["showtime"] < time.time():
-            objects[0]["text"]["startshow"] = time.time()
+        RENDERIMAGE(object, ("name", "pos", "size"))
