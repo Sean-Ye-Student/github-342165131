@@ -3,6 +3,18 @@ BUTTON WITH FUNCTION PAIR
 def FUNCTION():
   print("Button Clicked")
 
+button_kys = ("area", "function", "mouse")
+fallback = lambda dic, ky, default: dic[ky] if dic != None else default
+def mousePressed():
+    for object in objects:
+        button = object["button"]
+        a, f, m = fallback(button, "area", None), fallback(button, "function", None), fallback(button, "mouse", None)
+        p, p2 = fallback(a, "pos", None), fallback(a, "pos2", None)
+        x, y, x2, y2 = fallback(p, "x", 0), fallback(p, "y", 0), fallback(p2, "x", 0), fallback(p2, "y", 0)
+        if min(x, x2) <= mouseX <= max(x, x2) and min(y, y2) <= mouseY <= max(x, x2):
+            if f != None and mouseButton == m:
+                f()
+
 "button" : {
 	"mouse" : LEFT,
 	"function" : FUNCTION,
