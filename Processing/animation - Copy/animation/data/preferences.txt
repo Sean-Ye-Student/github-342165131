@@ -1,0 +1,1 @@
+editor.font.family Minecraftia-Regular.ttf
