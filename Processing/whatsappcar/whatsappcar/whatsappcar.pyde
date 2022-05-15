@@ -3,7 +3,7 @@ add_library("minim")
 animation = []
 img_kys = ("name", "size", "pos", "fill", "animation")
 fallback = lambda dic, ky, default: dic[ky] if dic != None else default
-sounds = {"intro" : {"minim" : "WhatsApp Trap Car.mp3", "repeat" : -1, "play_from_start" : False, "isolate" : True, "group" : 0}}
+sounds = {"intro" : {"minim" : "a.mp3", "repeat" : -1, "play_from_start" : True, "isolate" : True, "group" : 0}}
 def RENDERIMAGE(object, enabled_keys):
     img = object["image"]
     img_name, img_size, pos, f, anim = map(None, (img[ky] if ky in enabled_keys else None for ky in img_kys))
@@ -47,7 +47,7 @@ def setup():
         sounds[ky]["minim"] = minim.loadFile("sounds/" + sounds[ky]["minim"])
 
     #default settings
-animation.append({"image" : {"animation" : {"file_index" : "animation/frame_", "file_type" : "_delay-0.2s.jpg", "start" : 0, "total_frames" : 162, "frame_duration" : 0.2}, "size" : {"x" : screenX, "y" : screenY}, "pos" : {"x" : 0, "y" : 0}}})
+animation.append({"image" : {"animation" : {"file_index" : "animation/frame_", "file_type" : "_delay-0.2s.jpg", "start" : time.time(), "total_frames" : 162, "frame_duration" : 0.2}, "size" : {"x" : screenX, "y" : screenY}, "pos" : {"x" : 0, "y" : 0}}})
 def draw():
     background(100)
     PlaySound("intro", ("minim", "repeat", "play_from_start", "isolate", "group"))
