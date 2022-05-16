@@ -1,6 +1,6 @@
 import time
-add_library("minim")
-animations = {}
+add_library("minim") #Libraries
+animations = {} #saves animation
 img_kys = ("name", "size", "pos", "fill", "animation")
 fallback = lambda dic, ky, default: dic[ky] if dic != None else default
 text_kys = ("font", "word", "fill", "pos", "size", "startshow",  "showtime")
@@ -71,7 +71,7 @@ def PlaySound(sound_name, enabled_keys):
 images = [] #maybe just reference parts of animation from images to make it easier to reference scenes with correct settings!
 player_symbols = {True : {"image" : {"name" : "Symbols/Player Rock.png", "size" : {"x" : 310, "y" : 338}, "pos" : {"x" : 0, "y" : 0}}}, False : {"image" : {"name" : "Symbols/Player2 Rock.png", "size" : {"x" : 360, "y" : 338}, "pos" : {"x" : 240, "y" : 0}}}}
 clear_images = []
-def DisableScene():
+def DisableScene():#Removes scenes from image list
     i = 0
     r = 0
     while i + r < len(images) and len(clear_images) > 0:
@@ -82,7 +82,7 @@ def DisableScene():
         else:
             i += 1
 
-def LoadScene(scenes, sound_scene):
+def LoadScene(scenes, sound_scene): #Loads a scene by adding it to image list
     global images, clear_images
     images = []
     for scene in scenes:
@@ -97,7 +97,7 @@ def setup():
     minim = Minim(this)
     for ky in sounds:
         sounds[ky]["minim"] = minim.loadFile(sounds[ky]["minim"])
-
+    #Requires Width and Height meaning that animations must be declared in setup
     animations["Player win"] = {"image" : {"animation" : {"file_index" : "Player win/frames/frame (", "file_type" : ").jpg", "start" : time.time(), "total_frames" : 294,  "frame_duration" : 0.04}, "size" : {"x" : width, "y" : height}, "pos" : {"x" : 0, "y" : 0}}}
     animations["Player2 win"] = {"image" : {"animation" : {"file_index" : "Player2 win/frames/frame (", "file_type" : ").jpg", "start" : time.time(), "total_frames" : 210, "frame_duration" : 0.04}, "size" : {"x" : width, "y" : height}, "pos" : {"x" : 0, "y" : 0}}}
     animations["Player2 win round"] = {"image" : {"animation" : {"file_index" : "Player2 win round/frames/frame (", "file_type" : ").jpg", "start" : time.time(), "total_frames" : 123, "frame_duration" : 0.04}, "size" : {"x" : width, "y" : height}, "pos" : {"x" : 0, "y" : 0}}}
@@ -106,14 +106,15 @@ def setup():
     animations["Show"] = {"image" : {"animation" : {"file_index" : "Game/frames/frame (","file_type" : ").jpg", "start" : time.time(), "total_frames" : 54, "frame_duration" : 0.04}, "size" : {"x" : width, "y" : height}, "pos" : {"x" : 0, "y" : 0}}}
 
 player_1_turn = True #Starts from left to right
-player_1_wins = (-2, 1)
-symbols = ("Rock", "Paper", "Scissors")
-picked = {True : 0, False : 0}
-scores = {True : 0, False : 0}
+player_1_wins = (-2, 1)#The winning remainders from player1
+symbols = ("Rock", "Paper", "Scissors") #Converts index to name
+picked = {True : 0, False : 0} #The option the player picked
+scores = {True : 0, False : 0} #Players scores
 text_titles = [{"text" : {"font" : "eastwest.ttf", "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, "word" : "Player", "size" : 45, "pos" : {"x" : 90, "y" : 45, "z" : 0}}} ,{"text" : {"font" : "eastwest.ttf", "fill" : {"r" : 255, "g" : 255, "b" :255, "a" : 255}, "word" : "Player 2", "size" : 45, "pos" : {"x" : 410, "y" : 325, "z" : 0}}}]
 score_text = {True : {"text" : {"font" : "eastwest.ttf", "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, "word" : "999", "size" : 45, "pos" : {"x" : 130, "y" : 90, "z" : 0}}}, False :  {"text" : {"font" : "eastwest.ttf", "fill" : {"r" : 255, "g" : 255, "b" :255, "a" : 255}, "word" : "999", "size" : 45, "pos" : {"x" : 463, "y" : 280, "z" : 0}}}}
+#game text
 
-game_state = "Player 1 Picking"    
+game_state = "Player 1 Picking" #Stores the current state of the game
 show_symbols = -1
 reset = -1
 
