@@ -4,8 +4,8 @@
   <playlist id="main_bin">
     <property name="xml_retain">1</property>
   </playlist>
-  <producer id="black" in="00:00:00.000" out="00:00:16.120">
-    <property name="length">00:00:16.160</property>
+  <producer id="black" in="00:00:00.000" out="00:00:11.720">
+    <property name="length">00:00:11.760</property>
     <property name="eof">pause</property>
     <property name="resource">0</property>
     <property name="aspect_ratio">1</property>
@@ -14,7 +14,7 @@
     <property name="set.test_audio">0</property>
   </producer>
   <playlist id="background">
-    <entry producer="black" in="00:00:00.000" out="00:00:16.120"/>
+    <entry producer="black" in="00:00:00.000" out="00:00:11.720"/>
   </playlist>
   <producer id="producer1" in="00:00:00.000" out="00:02:07.520">
     <property name="length">00:02:07.560</property>
@@ -58,7 +58,7 @@
   <playlist id="playlist2">
     <property name="shotcut:video">1</property>
     <property name="shotcut:name">Player 2 round win</property>
-    <entry producer="producer2" in="00:01:08.880" out="00:01:13.280"/>
+    <entry producer="producer2" in="00:01:08.920" out="00:01:13.280"/>
   </playlist>
   <producer id="producer3" in="00:00:00.000" out="00:02:07.520">
     <property name="length">00:02:07.560</property>
@@ -98,7 +98,7 @@
     <property name="shotcut:video">1</property>
     <property name="shotcut:name">STP</property>
     <entry producer="producer3" in="00:01:14.120" out="00:01:14.120"/>
-    <entry producer="producer4" in="00:01:14.160" out="00:01:14.680"/>
+    <entry producer="producer4" in="00:01:14.160" out="00:01:15.440"/>
   </playlist>
   <producer id="producer5" in="00:00:00.000" out="00:02:07.520">
     <property name="length">00:02:07.560</property>
@@ -144,10 +144,27 @@
     <property name="shotcut:name">APTS</property>
     <entry producer="producer6" in="00:01:26.120" out="00:01:26.760"/>
   </playlist>
+  <producer id="producer0" in="00:00:00.000" out="00:02:07.520">
+    <property name="length">00:02:07.560</property>
+    <property name="eof">pause</property>
+    <property name="resource">C:/Users/sean1/Downloads/Saitama vs Bang rock paper scissors.mp4</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">0</property>
+    <property name="mlt_service">avformat-novalidate</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="creation_time">2022-02-12T10:16:24</property>
+    <property name="shotcut:hash">995f2448f4dbf20455918c2f2951eacb</property>
+    <property name="ignore_points">0</property>
+    <property name="shotcut:caption">Saitama vs Bang rock paper scissors.mp4</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
   <playlist id="playlist6">
     <property name="shotcut:video">1</property>
-    <property name="shotcut:name">STP</property>
-    <blank length="00:00:00.040"/>
+    <property name="shotcut:name">None</property>
+    <entry producer="producer0" in="00:01:26.120" out="00:01:26.120"/>
   </playlist>
   <producer id="producer7" in="00:00:00.000" out="00:02:07.520">
     <property name="length">00:02:07.560</property>
@@ -177,23 +194,6 @@
     <property name="shotcut:lock">0</property>
     <blank length="00:00:00.040"/>
   </playlist>
-  <producer id="producer0" in="00:00:00.000" out="00:02:07.520">
-    <property name="length">00:02:07.560</property>
-    <property name="eof">pause</property>
-    <property name="resource">C:/Users/sean1/Downloads/Saitama vs Bang rock paper scissors.mp4</property>
-    <property name="audio_index">1</property>
-    <property name="video_index">0</property>
-    <property name="mute_on_pause">0</property>
-    <property name="mlt_service">avformat-novalidate</property>
-    <property name="seekable">1</property>
-    <property name="aspect_ratio">1</property>
-    <property name="creation_time">2022-02-12T10:16:24</property>
-    <property name="shotcut:hash">995f2448f4dbf20455918c2f2951eacb</property>
-    <property name="ignore_points">0</property>
-    <property name="shotcut:caption">Saitama vs Bang rock paper scissors.mp4</property>
-    <property name="global_feed">1</property>
-    <property name="xml">was here</property>
-  </producer>
   <producer id="producer8" in="00:00:00.000" out="00:02:07.520">
     <property name="length">00:02:07.560</property>
     <property name="eof">pause</property>
@@ -214,9 +214,7 @@
   <playlist id="playlist0">
     <property name="shotcut:video">1</property>
     <property name="shotcut:name">PlayerWins</property>
-    <entry producer="producer0" in="00:01:30.040" out="00:01:38.440"/>
-    <blank length="00:00:03.240"/>
-    <entry producer="producer8" in="00:01:38.480" out="00:01:42.920"/>
+    <entry producer="producer8" in="00:01:30.040" out="00:01:38.440"/>
   </playlist>
   <producer id="producer10" in="00:00:00.000" out="00:02:07.520">
     <property name="length">00:02:07.560</property>
@@ -284,11 +282,52 @@
     <property name="shotcut:name">Player win round</property>
     <entry producer="producer9" in="00:01:26.880" out="00:01:31.760"/>
   </playlist>
-  <tractor id="tractor0" title="Shotcut version 20.11.28" global_feed="1" in="00:00:00.000" out="00:00:16.120">
+  <producer id="producer12" in="00:00:00.000" out="00:02:07.520">
+    <property name="length">00:02:07.560</property>
+    <property name="eof">pause</property>
+    <property name="resource">C:/Users/sean1/Downloads/Saitama vs Bang rock paper scissors.mp4</property>
+    <property name="audio_index">1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">0</property>
+    <property name="mlt_service">avformat-novalidate</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="creation_time">2022-02-12T10:16:24</property>
+    <property name="shotcut:hash">995f2448f4dbf20455918c2f2951eacb</property>
+    <property name="ignore_points">0</property>
+    <property name="shotcut:caption">Saitama vs Bang rock paper scissors.mp4</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+  </producer>
+  <playlist id="playlist12">
+    <property name="shotcut:video">1</property>
+    <property name="shotcut:name">V12</property>
+    <entry producer="producer12" in="00:01:06.720" out="00:01:08.840"/>
+  </playlist>
+  <producer id="producer13" in="00:00:00.000" out="03:59:59.960">
+    <property name="length">04:00:00.000</property>
+    <property name="eof">pause</property>
+    <property name="resource">c:/Users/sean1/Desktop/github-342165131/Processing/rockpaperscissors/rockpaperscissors/data/Game/frames/frame (40).png</property>
+    <property name="ttl">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="progressive">1</property>
+    <property name="seekable">1</property>
+    <property name="mlt_service">qimage</property>
+    <property name="creation_time">2022-05-15T22:12:43</property>
+    <property name="shotcut:hash">cf27ca41393e09ef7f074c06826e39cf</property>
+    <property name="global_feed">1</property>
+    <property name="shotcut:caption">frame (40).png</property>
+  </producer>
+  <playlist id="playlist13">
+    <property name="shotcut:video">1</property>
+    <property name="shotcut:name">V13</property>
+    <entry producer="producer13" in="00:00:00.000" out="00:00:00.040"/>
+  </playlist>
+  <tractor id="tractor0" title="Shotcut version 20.11.28" global_feed="1" in="00:00:00.000" out="00:00:11.720">
     <property name="shotcut">1</property>
     <property name="shotcut:projectAudioChannels">2</property>
     <property name="shotcut:projectFolder">0</property>
-    <property name="shotcut:scaleFactor">8.11213</property>
+    <property name="shotcut:scaleFactor">25.4398</property>
     <track producer="background"/>
     <track producer="playlist1" hide="both"/>
     <track producer="playlist2" hide="both"/>
@@ -297,11 +336,13 @@
     <track producer="playlist5" hide="both"/>
     <track producer="playlist6" hide="both"/>
     <track producer="playlist7" hide="both"/>
-    <track producer="playlist11" hide="both"/>
+    <track producer="playlist11" hide="video"/>
     <track producer="playlist0" hide="both"/>
     <track producer="playlist10" hide="both"/>
     <track producer="playlist8" hide="both"/>
     <track producer="playlist9" hide="both"/>
+    <track producer="playlist12" hide="video"/>
+    <track producer="playlist13"/>
     <transition id="transition2">
       <property name="a_track">0</property>
       <property name="b_track">1</property>
@@ -458,6 +499,34 @@
     <transition id="transition19">
       <property name="a_track">1</property>
       <property name="b_track">12</property>
+      <property name="version">0.9</property>
+      <property name="mlt_service">frei0r.cairoblend</property>
+      <property name="disable">0</property>
+    </transition>
+    <transition id="transition23">
+      <property name="a_track">0</property>
+      <property name="b_track">13</property>
+      <property name="mlt_service">mix</property>
+      <property name="always_active">1</property>
+      <property name="sum">1</property>
+    </transition>
+    <transition id="transition24">
+      <property name="a_track">1</property>
+      <property name="b_track">13</property>
+      <property name="version">0.9</property>
+      <property name="mlt_service">frei0r.cairoblend</property>
+      <property name="disable">0</property>
+    </transition>
+    <transition id="transition25">
+      <property name="a_track">0</property>
+      <property name="b_track">14</property>
+      <property name="mlt_service">mix</property>
+      <property name="always_active">1</property>
+      <property name="sum">1</property>
+    </transition>
+    <transition id="transition26">
+      <property name="a_track">1</property>
+      <property name="b_track">14</property>
       <property name="version">0.9</property>
       <property name="mlt_service">frei0r.cairoblend</property>
       <property name="disable">0</property>
