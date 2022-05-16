@@ -97,7 +97,7 @@ def setup():
     minim = Minim(this)
     for ky in sounds:
         sounds[ky]["minim"] = minim.loadFile(sounds[ky]["minim"])
-    #Requires Width and Height meaning that animations must be declared in setup
+    #Requires Width and Height meaning that animations must be declared in setup. Stores infomation about each animation
     animations["Player win"] = {"image" : {"animation" : {"file_index" : "Player win/frames/frame (", "file_type" : ").jpg", "start" : time.time(), "total_frames" : 294,  "frame_duration" : 0.04}, "size" : {"x" : width, "y" : height}, "pos" : {"x" : 0, "y" : 0}}}
     animations["Player2 win"] = {"image" : {"animation" : {"file_index" : "Player2 win/frames/frame (", "file_type" : ").jpg", "start" : time.time(), "total_frames" : 210, "frame_duration" : 0.04}, "size" : {"x" : width, "y" : height}, "pos" : {"x" : 0, "y" : 0}}}
     animations["Player2 win round"] = {"image" : {"animation" : {"file_index" : "Player2 win round/frames/frame (", "file_type" : ").jpg", "start" : time.time(), "total_frames" : 123, "frame_duration" : 0.04}, "size" : {"x" : width, "y" : height}, "pos" : {"x" : 0, "y" : 0}}}
@@ -112,13 +112,12 @@ picked = {True : 0, False : 0} #The option the player picked
 scores = {True : 0, False : 0} #Players scores
 text_titles = [{"text" : {"font" : "eastwest.ttf", "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, "word" : "Player", "size" : 45, "pos" : {"x" : 90, "y" : 45, "z" : 0}}} ,{"text" : {"font" : "eastwest.ttf", "fill" : {"r" : 255, "g" : 255, "b" :255, "a" : 255}, "word" : "Player 2", "size" : 45, "pos" : {"x" : 410, "y" : 325, "z" : 0}}}]
 score_text = {True : {"text" : {"font" : "eastwest.ttf", "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, "word" : "999", "size" : 45, "pos" : {"x" : 130, "y" : 90, "z" : 0}}}, False :  {"text" : {"font" : "eastwest.ttf", "fill" : {"r" : 255, "g" : 255, "b" :255, "a" : 255}, "word" : "999", "size" : 45, "pos" : {"x" : 463, "y" : 280, "z" : 0}}}}
-#game text
-
+#game text and text displaying the player scores
 game_state = "Player 1 Picking" #Stores the current state of the game
-show_symbols = -1
-reset = -1
+show_symbols = -1 #Will show the symbols the players picked when greater than the current time
+reset = -1 #Will reset the scene when greater than the current time
 
-def mouseWheel(y):
+def mouseWheel(y): #Scroll wheel will change the current players choice. The image is updated here as well
     if game_state != "Player 1 Picking" and game_state != "Player 2 Picking":
         return
     y = y.getCount()
@@ -129,7 +128,7 @@ def mouseWheel(y):
         picked[player_1_turn] = len(symbols) - 1
     player_symbols[player_1_turn]["image"]["name"] = "Symbols/" + ("Player " if player_1_turn else "Player2 ") + symbols[picked[player_1_turn]] + ".png"
 
-def mouseClicked():
+def mouseClicked(): #Selects the current choice and switches players. When the turn, returns back to Player1, the game will reveal the winner 
     global player_1_turn, game_state, reset, show_symbols
     if game_state != "Player 1 Picking" and game_state != "Player 2 Picking":
         return
@@ -153,41 +152,38 @@ def draw():
         RENDERIMAGE(animation, ("size", "pos", "animation")) #REDERS IMAGES 
         
     if reset > 0:
-        if time.time() >= reset:
+        if time.time() >= reset: #When the round is over, the score will be revealed in the form of a cutscene
             if game_state == "Show":
-                if "win" in game_state or game_state == "Draw":
-                    game_state = "Player 1 Picking"
                 game_state = "Player win round" if picked[True] - picked[False] in player_1_wins else ("Draw" if picked[True] - picked[False] == 0 else "Player2 win round")
-                
-                
+                #The game state is set to a player one win if the remainer is in favour. Otherwise if the choices were different it will be set to player 2 win, and if not it will be a draw
                 if game_state == "Player win round":
-                    scores[True] += 1
+                    scores[True] += 1 #Awards points to the correct player
                 elif game_state == "Player2 win round":
                     scores[False] += 1
                 
-                game_state = "Player win" if scores[True] >= 3 else ("Player2 win" if scores[False] >= 3 else game_state)
+                game_state = "Player win" if scores[True] >= 3 else ("Player2 win" if scores[False] >= 3 else game_state) #Will set the state to be final win if anyone has more than 2 points
                 
-                LoadScene((game_state,), game_state)
-                reset = time.time() + animations[game_state]["image"]["animation"]["total_frames"] * animations[game_state]["image"]["animation"]["frame_duration"]
+                LoadScene((game_state,), game_state)#Loads the cutscene
+                reset = time.time() + animations[game_state]["image"]["animation"]["total_frames"] * animations[game_state]["image"]["animation"]["frame_duration"] #Buffers enough time for the entire cutscene to play before game state returns back to choice picking
                 if game_state == "Player win" or game_state == "Player2 win":
-                    scores[True], scores[False] = 0, 0
+                    scores[True], scores[False] = 0, 0 #Resets the score after a player has won
             else:
-                game_state = "Player 1 Picking"
+                game_state = "Player 1 Picking" #When reset time is reached, let the first player pick again
                 reset = -1
-            show_symbols = -1
-    
+            show_symbols = -1 #Symbols are disabled as soon as the scene begins to play.
+    #Will display the hands depending on who is picking. Both will show when the show_symbols time is less than time, in the cutscene
     if game_state == "Player 1 Picking" or (show_symbols > -1 and time.time() >= show_symbols):
         RENDERIMAGE(player_symbols[True], ("name", "pos", "size"))
     if game_state == "Player 2 Picking" or (show_symbols > -1 and time.time() >= show_symbols): 
         RENDERIMAGE(player_symbols[False], ("name", "pos", "size"))
 
-    if game_state == "Player 1 Picking" or game_state == "Player 2 Picking":
-        for title in text_titles:
+    if game_state == "Player 1 Picking" or game_state == "Player 2 Picking": #Load the userinterface and disable sound during picking
+        for title in text_titles: #Draws the player titles
             RENDERTEXT(title, ("word", "fill", "font", "size", "pos"))
-        for ky in score_text.keys():
+        for ky in score_text.keys(): #Updates the player scores, on the text dictionaries
             score_text[ky]["text"]["word"] = str(scores[ky])
-        RENDERTEXT(score_text[True], ("word", "fill", "font", "size", "pos"))
+        RENDERTEXT(score_text[True], ("word", "fill", "font", "size", "pos")) #Renders the score text
         RENDERTEXT(score_text[False], ("word", "fill", "font", "size", "pos"))
         
         for ky in sounds:
-            sounds[ky]["minim"].pause()
+            sounds[ky]["minim"].pause() #Pauses all the sounds that are currently playing
