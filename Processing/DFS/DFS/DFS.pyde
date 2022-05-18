@@ -50,21 +50,21 @@ def draw():
     global queue, queue2, grid, grid2
     if len(queue) < 1:
         return
-    # for y, row in enumerate(grid):
-    #     for x, state in enumerate(row):
-    #         if x == startX and y == startY:
-    #             fill(0, 255, 0)
-    #         elif x == endX and y == endY:
-    #             fill(255, 0, 0)
-    #         elif state[0]:
-    #             if state[1] == inf:
-    #                 fill(255, 255, 255)
-    #             else:
-    #                 distance = ((endX - startX)**2 + (endY - startY)**2) ** 0.5
-    #                 fill(0, 255 * distance/state[1], 255)
-    #         else:
-    #             fill(0,0,0)
-    #         rect(x * square_size, y * square_size, square_size, square_size)
+    for y, row in enumerate(grid):
+        for x, state in enumerate(row):
+            if x == startX and y == startY:
+                fill(0, 255, 0)
+            elif x == endX and y == endY:
+                fill(255, 0, 0)
+            elif state[0]:
+                if state[1] == inf:
+                    fill(255, 255, 255)
+                else:
+                    distance = ((endX - startX)**2 + (endY - startY)**2) ** 0.5
+                    fill(0, 255 * distance/state[1], 255)
+            else:
+                fill(0,0,0)
+            rect(x * square_size, y * square_size, square_size, square_size)
     
     if grid[endY][endX][1] < inf:
         for pos in queue:
