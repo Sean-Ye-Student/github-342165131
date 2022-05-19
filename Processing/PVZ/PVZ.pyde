@@ -1,4 +1,5 @@
 import time
+add_library("minim")
 import random
 rows = list([{"Plants" : [None for ii in range(9)], "Zombies" : []} for i in range(6)])
 column_pos = (80,183,279,385,467, 573) #The borders between rows from the very top to the very bottom
@@ -6,40 +7,80 @@ row_pos = (251, 334, 408, 493, 576, 654, 738, 812, 898, 987) #The borders betwee
 spawn_pos_x = 1027
 
 zombies = {
-           "Basic" : {"rect" : {
-        "fill" : {"r" : 121, "g" : 135, "b" : 102,"a" : 255},
-        "stroke" :{"r" : 255, "g" : 255, "b" : 255, "a" : 255},
-        "weight" : 0,
-        "pos" : {"x" : spawn_pos_x, "y" : 0},
-        "size" : {"x" : 50, "y" : 100}},
-           "Settings" : {
-                         "offset" : {"x" : 0, "y" : -15},
-                         "speed" : 20,
-                         "last_moved" : time.time(),
-                         "last_attacked" : time.time(),
-                         "blocked" : False,
-                         "dps" : 1,
-                         }
-           
+           "Basic" : {"image" : {
+  "size" : {"x" : 154, "y" : 160},
+  "pos" : {"x" : spawn_pos_x, "y" : 0},
+  "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},
+  "animation" : {
+    "file_index" : "zombies/football/(", 
+    "file_type" : ").png",
+    "start" : 0,
+    "total_frames" : 11, 
+    "frame_duration" : 0.09
+  }
+},
+"Settings" : {
+                "offset" : {"x" : 50, "y" : 0},
+                "speed" : 40,
+                "last_moved" : time.time(),
+                "last_attacked" : time.time(),
+                "blocked" : False,
+                "dps" : 1,
+                }
            }
            
-           }
+}
 
 plants = {
-          "Wallnut" : {"rect" : {
-        "fill" : {"r" : 210, "g" : 171, "b" : 57,"a" : 255},
-        "stroke" :{"r" : 255, "g" : 255, "b" : 255, "a" : 255},
-        "weight" : 0,
-        "pos" : {"x" : 0, "y" : 0},
-        "size" : {"x" : 50, "y" : 50}},
+          "Wallnut" : {"image" : {
+  "size" : {"x" : 148, "y" : 125},
+  "pos" : {"x" : 0, "y" : 0},
+  "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},
+  "animation" : {
+    "file_index" : "plants/wallnut/(", 
+    "file_type" : ").png",
+    "start" : 0,
+    "total_frames" : 17, 
+    "frame_duration" : 0.08
+  }
+},
+          
+          
            "Settings" : {
-                         "offset" : {"x" : -15, "y" : -15},
+                         "offset" : {"x" : 25, "y" : 0},
                          "health" : 5
                          }
           }
 }
            
            
+sounds = {
+    "intro" : {
+        "minim" : "The_Zombies_Are_Coming.mp3", #name of the file
+        "repeat" : 1, #-1 is on a infinite loop, custom repeat values are not availiable yet
+        "play_from_start" : True, #Will replaying result in the sound playing from the start
+        "isolate" : True, #When played, should all other sounds from the same group be paused
+        "group" : 0 #The group that the sound belongs to
+        },
+    
+    "menu" : {
+        "minim" : "Crazy Dave Intro Theme.mp3", #name of the file
+        "repeat" : -1, #-1 is on a infinite loop, custom repeat values are not availiable yet
+        "play_from_start" : True, #Will replaying result in the sound playing from the start
+        "isolate" : True, #When played, should all other sounds from the same group be paused
+        "group" : 0 #The group that the sound belongs to
+        },
+ 
+    "game" : {
+        "minim" : "Grasswalk (In-Game).mp3", #name of the file
+        "repeat" : -1, #-1 is on a infinite loop, custom repeat values are not availiable yet
+        "play_from_start" : True, #Will replaying result in the sound playing from the start
+        "isolate" : True, #When played, should all other sounds from the same group be paused
+        "group" : 0 #The group that the sound belongs to
+        }
+    }
+           
+
 rect_kys = ("fill", "weight", "pos", "size", "stroke")
 fallback = lambda dic, ky, default: dic[ky] if dic != None else default
 def RENDERRECT(object, enabled_keys):
@@ -50,6 +91,47 @@ def RENDERRECT(object, enabled_keys):
     fill(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), fallback(f, "a", 255)) 
     stroke(fallback(st, "r", 255), fallback(st, "g", 255), fallback(st, "b", 255), fallback(st, "a", 255))
     rect(fallback(p, "x", 0), fallback(p, "y", 0), fallback(s, "x", 0), fallback(s, "y", 0))
+
+
+sound_kys = ("minim", "repeat", "play_from_start", "isolate", "group")
+def PlaySound(sound_name, enabled_keys):
+    if not(sound_name in sounds.keys()):
+        return
+    sound = sounds[sound_name]
+    m, repeat, play_from_start, isolate, group = map(None, (sound[ky] if ky in enabled_keys else None for ky in sound_kys))
+    if m == None:
+        return
+    if isolate == True:
+        for ky in sounds:
+            if ky == sound_name:
+                continue
+            same_group = True if "group" in sounds[ky].keys() and sounds[ky]["group"] == group else False
+            if same_group:
+                sounds[ky]["minim"].pause()
+    if m.isPlaying() == False:
+        if play_from_start == True:
+            m.rewind()
+        if repeat == -1:
+            m.loop()
+        else:
+            m.play()
+
+img_kys = ("name", "size", "pos", "fill", "animation")
+fallback = lambda dic, ky, default: dic[ky] if dic != None else default
+def RENDERIMAGE(object, enabled_keys): #object is a dictionary, enabled_keys is a tuple storing all the keys that are in the object (assumed to be there)
+    img = object["image"]
+    img_name, img_size, pos, f, anim = map(None, (img[ky] if ky in enabled_keys else None for ky in img_kys))
+    if anim != None:
+        fd, tf = anim["frame_duration"], anim["total_frames"], 
+        elapsed = (time.time() - anim["start"]) % (tf * fd) if tf * fd > 0 else 1
+        img_name = anim["file_index"] + str(int(elapsed/fd if fd > 0 else 1)) + anim["file_type"]
+        
+    if img_name == None:
+        return
+    
+    tint(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), fallback(f, "a", 255))
+    image(loadImage(img_name), fallback(pos, "x", 0), fallback(pos, "y", 0), fallback(img_size, "x", 100), fallback(img_size, "y", 100))   
+
 
 types = (type([]), type({}))
 def copycollection(coll):
@@ -82,47 +164,56 @@ def GetLocation(ax, ay):
             if x_pos <= ax < row_pos[x + 1] and y_pos <= ay < column_pos[y + 1]:
                 return x, y
     return None, None
+
 def setup():
     size(1000, 600)
+    minim = Minim(this)
+    for ky in sounds:
+        sounds[ky]["minim"] = minim.loadFile("sounds/" + sounds[ky]["minim"])
+    PlaySound("intro", ("minim", "repeat", "play_from_start", "isolate", "group"))
 cooldown = time.time()+1
+start_music = time.time() + 4
 def draw():    
     global rows, cooldown
     if time.time() >= cooldown:        
         Spawn(zombies["Basic"], random.randint(0,4), None, True)
         cooldown = time.time() + 1
-    if mousePressed:
-        print(mouseX, mouseY)
+        
+    if start_music <= time.time():
+        PlaySound("game", ("minim", "repeat", "play_from_start", "isolate", "group"))
+    # if mousePressed:
+    #     print(mouseX, mouseY)
     copy(loadImage("Lawn.png"), 0, 0, 1400, 600, 0, 0, 1400, 600)
     for i, row in enumerate(rows):
+        for ii, plant in enumerate(row["Plants"]):
+            if not(plant):
+                continue
+            settingp = plant["Settings"]
+            imagp = plant["image"]
+            imagp["pos"]["y"] = column_pos[i + 1] + settingp["offset"]["y"] - imagp["size"]["y"]
+            imagp["pos"]["x"] = row_pos[ii+1] + settingp["offset"]["x"] - imagp["size"]["x"]
+            RENDERIMAGE(plant, ("animation", "pos", "size", "fill"))
+            
         for ii, zombie in enumerate(row["Zombies"]):    
             settingz = zombie["Settings"]
-            rezt = zombie["rect"]
-            zombie["rect"]["pos"]["y"] = column_pos[i + 1] + settingz["offset"]["y"] - rezt["size"]["y"]
+            imagz = zombie["image"]
+            imagz["pos"]["y"] = column_pos[i + 1] + settingz["offset"]["y"] - imagz["size"]["y"]
             elapsed = time.time() - settingz["last_moved"]
             zombie["Settings"]["last_moved"] = time.time()
-            #maybe add some blocking logic for wallnuts
-            x, y = GetLocation(zombie["rect"]["pos"]["x"], zombie["rect"]["pos"]["y"] + zombie["rect"]["size"]["y"]/2)
-            target_plant = rows[y]["Plants"][x] if x != None and y != None else None
+            x, y = GetLocation(imagz["pos"]["x"] + settingz["offset"]["x"], imagz["pos"]["y"] + imagz["size"]["y"]/2) #x + 1 so the zombie target plants infront and in the current tile
+            target_plant = rows[y]["Plants"][x] if x != None and y != None else (rows[y]["Plants"][x + 1] if x != None and y != None and x + 1 < len(rows[y]["Plants"][x]) else None)
             settingz["blocked"] = True if target_plant != None else False
             if not(settingz["blocked"]):
-                zombie["rect"]["pos"]["x"] -= settingz["speed"] * elapsed
-            
+                imagz["pos"]["x"] -= settingz["speed"] * elapsed
+                imagz["animation"]["file_index"] = "zombies/football/("
+            else:
+                imagz["animation"]["file_index"] = "zombies/footballeat/("
             if target_plant:
                 target_plant["Settings"]["health"] -= (time.time() - settingz["last_attacked"]) * settingz["dps"]
                 if target_plant["Settings"]["health"] <= 0:
                     rows[y]["Plants"][x] = None
             settingz["last_attacked"] = time.time()
-            RENDERRECT(zombie, ("fill", "weight", "pos", "size", "stroke"))
-            
-            
-        for ii, plant in enumerate(row["Plants"]):
-            if not(plant):
-                continue
-            settingp = plant["Settings"]
-            rept = plant["rect"]
-            rows[i]["Plants"][ii]["rect"]["pos"]["y"] = column_pos[i + 1] + settingp["offset"]["y"] - rept["size"]["y"]
-            rows[i]["Plants"][ii]["rect"]["pos"]["x"] = row_pos[ii+1] + settingp["offset"]["x"] - rept["size"]["x"]
-            RENDERRECT(plant, ("fill", "weight", "pos", "size", "stroke"))
+            RENDERIMAGE(zombie, ("animation", "pos", "size", "fill"))
     noStroke()
     for y, y_pos in enumerate(column_pos):
         for x, x_pos in enumerate(row_pos):

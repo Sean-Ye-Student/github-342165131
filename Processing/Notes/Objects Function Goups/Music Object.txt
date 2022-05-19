@@ -21,6 +21,9 @@ def PlaySound(sound_name, enabled_keys):
         else:
             m.play()
 
+#INCLUDE THE MINIM IMPORT
+add_library("minim")
+
 #NOTE That  must be in setup to load the files correctly
 #minim = Minim(this)
 #for ky in sounds:
