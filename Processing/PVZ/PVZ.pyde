@@ -6,7 +6,26 @@ column_pos = (80,183,279,385,467, 573) #The borders between rows from the very t
 row_pos = (251, 334, 408, 493, 576, 654, 738, 812, 898, 987) #The borders between columns from the very left to the very right
 spawn_pos_x = 1027
 
-zombies = {"Basic" : {"image" : {"size" : {"x" : 154, "y" : 160}, "pos" : {"x" : spawn_pos_x, "y" : 0}, "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},"animation" : {"file_index" : "zombies/football/(", "file_type" : ").png", "start" : 0,"total_frames" : 11, "frame_duration" : 0.09}}, "Settings" : {"offset" : {"x" : 50, "y" : 0}, "speed" : 40, "last_moved" : time.time(), "last_attacked" : time.time(), "blocked" : False, "dps" : 1}}}
+zombies = {"Football" : {"image" : {"size" : {"x" : 154, "y" : 160}, "pos" : {"x" : spawn_pos_x, "y" : 0}, "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},"animation" : {"file_index" : "zombies/football/(", "file_type" : ").png", "start" : 0,"total_frames" : 11, "frame_duration" : 0.09}}, "Settings" : {"offset" : {"x" : 50, "y" : 0}, "speed" : 40, "last_moved" : time.time(), "last_attacked" : time.time(), "blocked" : False, "dps" : 3}},
+           "Dancer" : {"image" : {
+                                    "size" : {"x" : 331, "y" : 498}, 
+                                    "pos" : {"x" : spawn_pos_x, "y" : 0}, 
+                                    "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},
+                                    "animation" : {"file_index" : "zombies/dancer/(", 
+                                                   "file_type" : ").png", 
+                                                   "start" : 0,
+                                                   "total_frames" : 34, 
+                                                   "frame_duration" : 0.1}}, 
+            "Settings" : {"offset" : {"x" : 0, "y" : 0}, 
+                          "speed" : 15, 
+                          "last_moved" : time.time(), 
+                          "last_attacked" : time.time(), 
+                          "blocked" : False, 
+                          "dps" : 1}}
+           
+           
+           
+           }
 plants = {"Wallnut" : {"image" : {"size" : {"x" : 148, "y" : 125},"pos" : {"x" : 0, "y" : 0},"fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, "animation" : {"file_index" : "plants/wallnut/(", "file_type" : ").png","start" : 0,"total_frames" : 17, "frame_duration" : 0.08}}, "Settings" : {"offset" : {"x" : 25, "y" : 0}, "health" : 5}}}    
 sounds = {"intro" : {"minim" : "The_Zombies_Are_Coming.mp3", "repeat" : 1, "play_from_start" : True, "isolate" : True, "group" : 0}, "menu" : {"minim" : "Crazy Dave Intro Theme.mp3", "repeat" : -1, "play_from_start" : True, "isolate" : True,"group" : 0}, "game" : {"minim" : "Grasswalk (In-Game).mp3", "repeat" : -1, "play_from_start" : True, "isolate" : True, "group" : 0}}
            
@@ -57,7 +76,7 @@ def RENDERIMAGE(object, enabled_keys): #object is a dictionary, enabled_keys is 
         
     if img_name == None:
         return
-    
+    print(img_name)
     tint(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), fallback(f, "a", 255))
     image(loadImage(img_name), fallback(pos, "x", 0), fallback(pos, "y", 0), fallback(img_size, "x", 100), fallback(img_size, "y", 100))   
 
@@ -106,7 +125,7 @@ start_music = time.time() + 4
 def draw():    
     global rows, cooldown
     if time.time() >= cooldown:        
-        Spawn(zombies["Basic"], random.randint(0,4), None, True)
+        Spawn(zombies["Football"], random.randint(0,4), None, True)
         cooldown = time.time() + 1
         
     if start_music <= time.time():    # if mousePressed:
@@ -140,7 +159,7 @@ def draw():
             settingz["blocked"] = True if target_plant != None else False
             if not(settingz["blocked"]):
                 imagz["pos"]["x"] -= settingz["speed"] * elapsed        
-            imagz["animation"]["file_index"] = "zombies/football/(" if not(settingz["blocked"]) else "zombies/footballeat/("
+            imagz["animation"]["file_index"] =  "zombies/football/(" if not(settingz["blocked"]) else "zombies/footballeat/("
             
             if target_plant != None:
                 target_plant["Settings"]["health"] -= (time.time() - settingz["last_attacked"]) * settingz["dps"]

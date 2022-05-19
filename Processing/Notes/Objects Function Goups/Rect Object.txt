@@ -1,14 +1,14 @@
-def RENDERRECT(object):
+rect_kys = ("fill", "weight", "pos", "size", "stroke")
+fallback = lambda dic, ky, default: dic[ky] if dic != None else default
+def RENDERRECT(object, enabled_keys):
     global objects
-    re = g_c_key(object, "rect")
-    if re == None:
-        return
-    kys = ("fill", "weight", "pos", "size", "stroke", ("fill", "r"), ("fill", "g"), ("fill", "b"), ("fill", "a"), ("stroke", "r"), ("stroke", "g"), ("stroke", "b"), ("stroke", "a"), ("pos", "x"), ("pos", "y"), ("size", "x"), ("size", "y"))
-    f, w, p, s, st, r, g, b, a, rst, gst, bst, ast, x, y, sx, sy = map(None, (g_c_key(re, ky) for ky in kys))
+    re = object["rect"]
+    f, w, p, s, st,  = map(None, (re[ky] if ky in enabled_keys else None for ky in rect_kys))
     strokeWeight(w if w != None else 1)
-    fill(r if r != None else 255, g if g != None else 255, b if b != None else 255, a if a != None else 255) 
-    stroke(rst if rst != None else 255, gst if gst != None else 255, bst if bst != None else 255, ast if ast != None else 255)
-    rect(x if x != None else 0, y if y != None else 0, sx if sx != None else 0, sy if sy != None else 0)
+    fill(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), fallback(f, "a", 255)) 
+    stroke(fallback(st, "r", 255), fallback(st, "g", 255), fallback(st, "b", 255), fallback(st, "a", 255))
+    rect(fallback(p, "x", 0), fallback(p, "y", 0), fallback(s, "x", 0), fallback(s, "y", 0))
+
 
 "rect" : {
 	"fill" : {"r" : 255, "g" : 255, "b" : 255,"a" : 255},
