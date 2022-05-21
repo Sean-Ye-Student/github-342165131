@@ -1,32 +1,23 @@
 import time
 import random
-lines = [[[220, 250, 210, 200], [1, -1]],
-         [[210, 200, 250, 175], [1, -1]],
-         [[200, 300, 301, 0], [1, -1]],
-         [[200, 300, 301, 0], [1, -1]],
-         [[200, 300, 301, 0], [1, -1]]]
-
+# lines = [[[220, 250, 210, 200], [1, -1]],
+#          [[210, 200, 250, 175], [1, -1]],
+#          [[200, 300, 301, 0], [1, -1]],
+#          [[200, 300, 301, 0], [1, -1]],
+#          [[200, 300, 301, 0], [1, -1]]]
+lines = list([[list([random.randint(0, 500) for i in range(4)]), list([random.randint(-2, 2)+0.1, random.randint(-2, 2)+0.1])] for i in range(5)])
 player_scale = 10
 player_offset = (250, 250)
-player = [[0,0], [-1,2], [0,1.5], [1,2]]
-
+player_points = [lambda s, a, o: s*cos(a) + o, lambda s, a, o: s*sin(a) + o,
+        lambda s, a, o: -s*cos(-a + 150) + o, lambda s, a, o: s*sin(-a + 150) + o,
+        lambda s, a, o: -s*(2.5/6)*cos(a) + o, lambda s, a, o: -s*(2.5/6)*sin(a) + o,
+        lambda s, a, o: -s*cos(a + 150) + o, lambda s, a, o: -s*sin(a + 150) + o]
 player_angle = 0
-player_velocity = [0,0]
-player_acceleration = [0,0]
+player_origin = [250, 250] #spawn location, but will change when player moves
+player_velocity = [0,0]#will change when player moves
+player_speed = 5
+player_control_minimum_range = 10
 time_elapsed = time.time()
-# player_bounds = [10**6, 10**6, -1, -1]
-for pos in player:
-    for i in range(len(pos)):
-        pos[i] *= player_scale
-        pos[i] += player_offset[0 if i%2 == 0 else 1]
-#         if i%2 == 0:
-#             player_bounds[0] = min(player_bounds[0], pos[i])
-#             player_bounds[2] = max(player_bounds[0], pos[i])
-#         else:
-#             player_bounds[1] = min(player_bounds[1], pos[i])
-#             player_bounds[3] = max(player_bounds[1], pos[i])
-# player_center = [((player_bounds[0] - player_bounds[2]) / 2) + player_bounds[0] , ((player_bounds[1] - player_bounds[3]) / 2) + player_bounds[1]]
-# print(player_center)
 def setup():
     size(500, 500)
     
@@ -46,50 +37,35 @@ def LineIntersection(x, y, x2, y2, vx, vy, xx, yy, xx2, yy2, vx2, vy2):
     collided_y = (in_y_range and in_x_range2 and vy != 0) or (in_x_range and in_y_range2 and vy2 != 0)
     return collided_x, collided_y, xi, yi
 
-# def mouseClicked():
-#     global , line2_velocity
-#     line1_velocity[1] *= -1
 
-get_quad = lambda x, y: (2 if y >= 0 else 4) if (x >= 0) != (y >= 0) else (1 if x >= 0 and y >= 0 else 3)
-def keyPressed():
-    #global player_angle
-    # player_angle = player_angle - 0.1 if key == "a" else (player_angle + 0.1 if key == "d" else 0)
-    
-    # player[1][0] = 2*player_scale*cos(player_angle) + player_center[0]
-    # player[1][1] = 2*player_scale*sin(player_angle) + player_center[1]
-    
-    # player[2][0] = 3*player_scale*cos(player_angle) + player_center[0]
-    # player[2][1] = 3*player_scale*sin(player_angle) + player_center[1]
-    print(player[1])
-    player_velocity[0] = -10 if key == "a" else (10 if key == "d" else 0)
-    player_velocity[1] = -10 if key == "w" else (10 if key == "s" else 0)
-def keyReleased():
-    player_velocity[0] = 0
-    player_velocity[1] = 0
+#def keyPressed():
+
 def draw():
-    global time_elapsed, player_acceleration, player_velocity
+    global player_angle, player_origin, player_velocity
     background(0)
     stroke(255)
-    for x, pos in enumerate(player):
-        pos[0] += player_velocity[0]
-        pos[1] += player_velocity[1]
-    for x, pos in enumerate(player):
-        line(pos[0], pos[1], player[(x + 1) if x + 1 < len(player) else 0][0], player[(x + 1) if x + 1 < len(player) else 0][1])
-    
-   #  if not(keyPressed):
-   #      player_acceleration[1] += -0.1 if player_velocity[1] > 0 else 0.1
-   #      if abs(player_acceleration[1]) < 0.2:
-   #          player_acceleration[1] = 0
+    offsetX = mouseX - player_origin[0] + 0.0
+    offsetY = -(mouseY - player_origin[1] + 0.0)
+    if (offsetX**2 + offsetY **2)**0.5 >= player_control_minimum_range:
+        if keyPressed and key == "w":
+            player_velocity = [player_speed * cos(player_angle), player_speed * sin(player_angle)]
+            player_origin[0] += player_velocity[0]+0.0001
+            player_origin[1] += player_velocity[1]+0.0001
         
-   #  player_velocity[1] = player_acceleration[1] * (time.time()-time_elapsed)
-   #  print(player_velocity[1])
-   #  time_elapsed = time.time()
-    for i, pos in enumerate(player):
-        for  ii, target_line in enumerate(lines):
-            if i == ii:
-                continue
-            pos2 = player[(x + 1) if x + 1 < len(player) else 0][0], player[(x + 1) if x + 1 < len(player) else 0][1]
-            collided_x, collided_y, xi, yi = LineIntersection(pos[0], pos[1], pos2[0], pos2[0], 
+        player_angle = -atan(offsetY/offsetX) if offsetX != 0 else 0
+        player_angle = -(atan(offsetY/offsetX)+3.1) if offsetX != 0 and offsetX < 0 else player_angle
+    points = tuple(formula(player_scale, player_angle, player_origin[0] if i%2 == 0 else player_origin[1]) for i, formula in enumerate(player_points))
+    line(points[0], points[1], points[2], points[3])
+    line(points[2], points[3], points[4], points[5])
+    line(points[4], points[5], points[6], points[7])
+    line(points[6], points[7], points[0], points[1])
+
+    for i in range(0, len(points), 2):
+        for ii, target_line in enumerate(lines):
+            s, a, o, o2 = player_scale, player_angle, player_origin[0], player_origin[1]
+            x, y = player_points[i](s, a, o), player_points[i + 1](s, a, o2)
+            x2, y2 = player_points[i + 1 if i + 1 < len(player_points) else 0](s, a, o), player_points[i + 2 if i + 2 < len(player_points) else 1](s, a, o2)
+            collided_x, collided_y, xi, yi = LineIntersection(x, y, x2, y2, 
                                                               player_velocity[0], player_velocity[1], target_line[0][0], target_line[0][1], target_line[0][2], target_line[0][3], target_line[1][0], target_line[1][1])
 
             if collided_x or collided_y:
