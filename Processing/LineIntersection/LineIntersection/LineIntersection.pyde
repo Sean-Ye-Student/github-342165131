@@ -24,7 +24,8 @@ def setup():
 is_vertical = lambda x, x2: x == x2
 is_horizontal = lambda y, y2: y == y2
 def LineIntersection(x, y, x2, y2, vx, vy, xx, yy, xx2, yy2, vx2, vy2):
-    slope, slope2 = ((y2 - y + 0.0)/(x2 - x)) if (x2 - x) != 0 else 0, ((yy2 - yy + 0.0)/(xx2 - xx)) if (xx2 - xx) != 0 else 0
+    slope = (y2 - y + 0.0)/((x2 - x) + 0 if (x2 - x) != 0 else 0.1) 
+    slope2 = (yy2 - yy + 0.0)/((xx2 - xx) + 0 if (xx2 - xx) != 0 else 0.1)
     b, b2 = y - slope * x, yy - slope2 * xx
     xi = ((b2 - b)/(slope - slope2)) if (slope - slope2) != 0 else 0
     yi = (slope * xi + b) if slope != 0 else 0
@@ -33,17 +34,15 @@ def LineIntersection(x, y, x2, y2, vx, vy, xx, yy, xx2, yy2, vx2, vy2):
     in_x_range = min(x, x2) <= xi <= max(x, x2)
     in_y_range = min(y, y2) <= yi <= max(y, y2)
     collided_x, collided_y = False, False
-    collided_x = (in_x_range and in_y_range2 and vx != 0) or (in_y_range and in_x_range2 and vx2 != 0)
-    collided_y = (in_y_range and in_x_range2 and vy != 0) or (in_x_range and in_y_range2 and vy2 != 0)
+    #  collided_x = (in_x_range and in_y_range2 and vx != 0) or (in_y_range and in_x_range2 and vx2 != 0)
+    # collided_y = (in_y_range and in_x_range2 and vy != 0) or (in_x_range and in_y_range2 and vy2 != 0)
+    collided_x = (in_x_range and in_y_range2) or (in_y_range and in_x_range2)
+    collided_y = (in_y_range and in_x_range2) or (in_x_range and in_y_range2)
     return collided_x, collided_y, xi, yi
 
 
-#def keyPressed():
-
-def draw():
-    global player_angle, player_origin, player_velocity
-    background(0)
-    stroke(255)
+def PlayerController():
+    global  player_angle, player_origin, player_velocity
     offsetX = mouseX - player_origin[0] + 0.0
     offsetY = -(mouseY - player_origin[1] + 0.0)
     if (offsetX**2 + offsetY **2)**0.5 >= player_control_minimum_range:
@@ -54,6 +53,10 @@ def draw():
         
         player_angle = -atan(offsetY/offsetX) if offsetX != 0 else 0
         player_angle = -(atan(offsetY/offsetX)+3.1) if offsetX != 0 and offsetX < 0 else player_angle
+def draw():
+    background(0)
+    stroke(255)
+    PlayerController()
     points = tuple(formula(player_scale, player_angle, player_origin[0] if i%2 == 0 else player_origin[1]) for i, formula in enumerate(player_points))
     line(points[0], points[1], points[2], points[3])
     line(points[2], points[3], points[4], points[5])
@@ -71,6 +74,7 @@ def draw():
             if collided_x or collided_y:
                 ellipse(xi, yi, 4, 4)
                 stroke(255,0,0)
+                print("collided", time.time())
             else:
                 stroke(255)
                     
