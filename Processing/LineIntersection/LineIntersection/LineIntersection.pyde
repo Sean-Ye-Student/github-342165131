@@ -1,11 +1,7 @@
 import time
 import random
-# lines = [[[220, 250, 210, 200], [1, -1]],
-#          [[210, 200, 250, 175], [1, -1]],
-#          [[200, 300, 301, 0], [1, -1]],
-#          [[200, 300, 301, 0], [1, -1]],
-#          [[200, 300, 301, 0], [1, -1]]]
-lines = list([[list([random.randint(0, 500) for i in range(4)]), list([random.randint(-2, 2)+0.1, random.randint(-2, 2)+0.1])] for i in range(5)])
+lines = [[[100, 50, 100, 200], [0, 0]]]
+# lines = list([[list([random.randint(0, 500) for i in range(4)]), list([random.randint(-2, 2)+0.1, random.randint(-2, 2)+0.1])] for i in range(5)])
 player_scale = 10
 player_offset = (250, 250)
 player_points = [lambda s, a, o: s*cos(a) + o, lambda s, a, o: s*sin(a) + o,
@@ -13,9 +9,11 @@ player_points = [lambda s, a, o: s*cos(a) + o, lambda s, a, o: s*sin(a) + o,
         lambda s, a, o: -s*(2.5/6)*cos(a) + o, lambda s, a, o: -s*(2.5/6)*sin(a) + o,
         lambda s, a, o: -s*cos(a + 150) + o, lambda s, a, o: -s*sin(a + 150) + o]
 player_angle = 0
+player_velocity_angle = 0
 player_origin = [250, 250] #spawn location, but will change when player moves
 player_velocity = [0,0]#will change when player moves
-player_speed = 5
+player_acceleration = 5
+player_friction = 60
 player_control_minimum_range = 10
 time_elapsed = time.time()
 def setup():
@@ -24,8 +22,8 @@ def setup():
 is_vertical = lambda x, x2: x == x2
 is_horizontal = lambda y, y2: y == y2
 def LineIntersection(x, y, x2, y2, vx, vy, xx, yy, xx2, yy2, vx2, vy2):
-    slope = (y2 - y + 0.0)/((x2 - x) + 0 if (x2 - x) != 0 else 0.1) 
-    slope2 = (yy2 - yy + 0.0)/((xx2 - xx) + 0 if (xx2 - xx) != 0 else 0.1)
+    slope = (y2 - y + 0.0)/((x2 - x) + 0 if (x2 - x) != 0 else 0.001) 
+    slope2 = (yy2 - yy + 0.0)/((xx2 - xx) + 0 if (xx2 - xx) != 0 else 0.001)
     b, b2 = y - slope * x, yy - slope2 * xx
     xi = ((b2 - b)/(slope - slope2)) if (slope - slope2) != 0 else 0
     yi = (slope * xi + b) if slope != 0 else 0
@@ -42,17 +40,26 @@ def LineIntersection(x, y, x2, y2, vx, vy, xx, yy, xx2, yy2, vx2, vy2):
 
 
 def PlayerController():
-    global  player_angle, player_origin, player_velocity
+    global  player_angle, player_origin, player_velocity, time_elapsed, player_acceleration, player_velocity_angle
     offsetX = mouseX - player_origin[0] + 0.0
     offsetY = -(mouseY - player_origin[1] + 0.0)
     if (offsetX**2 + offsetY **2)**0.5 >= player_control_minimum_range:
-        if keyPressed and key == "w":
-            player_velocity = [player_speed * cos(player_angle), player_speed * sin(player_angle)]
-            player_origin[0] += player_velocity[0]+0.0001
-            player_origin[1] += player_velocity[1]+0.0001
-        
         player_angle = -atan(offsetY/offsetX) if offsetX != 0 else 0
         player_angle = -(atan(offsetY/offsetX)+3.1) if offsetX != 0 and offsetX < 0 else player_angle
+    if keyPressed and key == "w":
+        player_velocity_angle = player_angle
+        player_velocity[0] += cos(player_velocity_angle) * player_acceleration * (time.time() - time_elapsed)
+        player_velocity[1] += sin(player_velocity_angle) * player_acceleration * (time.time() - time_elapsed)
+    else:
+        player_velocity[0] *= min(0.999, player_friction*(time.time() - time_elapsed))
+        player_velocity[1] *= min(0.999, player_friction*(time.time() - time_elapsed))
+            
+    player_origin[0] += player_velocity[0]
+    player_origin[1] += player_velocity[1]
+    player_origin[0] = -player_scale if player_origin[0] > width + player_scale else (width + player_scale if player_origin[0] < -player_scale else player_origin[0])
+    player_origin[1] = -player_scale if player_origin[1] > height + player_scale else (height + player_scale if player_origin[1] < -player_scale else player_origin[1])
+    print(player_origin[1])
+    time_elapsed = time.time()
 def draw():
     background(0)
     stroke(255)
@@ -72,11 +79,12 @@ def draw():
                                                               player_velocity[0], player_velocity[1], target_line[0][0], target_line[0][1], target_line[0][2], target_line[0][3], target_line[1][0], target_line[1][1])
 
             if collided_x or collided_y:
+                fill(255, 0, 0)
+                noStroke()
                 ellipse(xi, yi, 4, 4)
-                stroke(255,0,0)
-                print("collided", time.time())
-            else:
                 stroke(255)
+            else:
+                fill(255)
                     
                     
     for current_line in lines:
