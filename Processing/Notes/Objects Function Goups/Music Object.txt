@@ -4,8 +4,7 @@ def PlaySound(sound_name, enabled_keys):
         return
     sound = sounds[sound_name]
     m, repeat, play_from_start, isolate, group = map(None, (sound[ky] if ky in enabled_keys else None for ky in sound_kys))
-    if m == None:
-        return
+
     if isolate == True:
         for ky in sounds:
             if ky == sound_name:
@@ -13,13 +12,17 @@ def PlaySound(sound_name, enabled_keys):
             same_group = True if "group" in sounds[ky].keys() and sounds[ky]["group"] == group else False
             if same_group:
                 sounds[ky]["minim"].pause()
+                
+    if m == None:
+        return
     if m.isPlaying() == False:
         if play_from_start == True:
             m.rewind()
-        if repeat == -1:
-            m.loop()
+
+        if repeat > -1:
+            m.loop(repeat - 1)
         else:
-            m.play()
+            m.loop()
 
 #INCLUDE THE MINIM IMPORT
 add_library("minim")
@@ -40,46 +43,3 @@ sounds = {
 				"group" : 0 #The group that the sound belongs to
 				}
 		}
-
-
-
-
-THIS MIGHT NOT WORK, Will probably need some optimizations
-
-disable_sounds = []
-sound_kys = ("minim", "repeat", "play_from_start", "isolate", "group")
-
-def DisableSound():
-    global disable_sounds
-    i = 0
-    while i < len(disable_sounds):
-        sound_name, disable_time = map(None, disable_sounds[i])
-        if disable_time <= time.time():
-            sounds[sound_name]["minim"].pause()
-            disable_sounds.pop(i)
-        else:
-            i += 1
-
-    
-def PlaySound(sound_name, enabled_keys):
-    if not(sound_name in sounds.keys()):
-        return
-    sound = sounds[sound_name]
-    m, repeat, play_from_start, isolate, group = map(None, (sound[ky] if ky in enabled_keys else None for ky in sound_kys))
-
-    if isolate == True:
-        for ky in sounds:
-            if ky == sound_name:
-                continue
-            same_group = True if "group" in sounds[ky].keys() and sounds[ky]["group"] == group else False
-            if same_group:
-                sounds[ky]["minim"].pause()
-                
-    if m == None:
-        return
-    if m.isPlaying() == False:
-        if play_from_start == True:
-            m.rewind()
-        m.loop()
-        if repeat > -1:
-            disable_sounds.append((sound_name, time.time() + (m.length() + 0.0)/1000 * repeat if repeat != None else 1))
