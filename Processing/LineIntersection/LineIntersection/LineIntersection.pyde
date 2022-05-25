@@ -180,15 +180,15 @@ def Asteroids():
                 collided_x, collided_y, xi, yi = LineIntersection(x, y, x2, y2, player_velocity[0], player_velocity[1], xx, yy, xx2, yy2, axv, ayv)
                 #Shows player collisions
                 if collided_x or collided_y: 
-                    fill(255, 0, 0)
-                    noStroke()
-                    ellipse(xi, yi, 4, 4)
-                    stroke(255)
+                    # fill(255, 0, 0)
+                    # noStroke()
+                    # ellipse(xi, yi, 4, 4)
+                    # stroke(255)
                     PlaySound("siren2", ("minim", "repeat", "isolate", "group", "play_from_start"))
                     #print(frameRate)
                     break
-                else:
-                    fill(255)
+                # else:
+                #     fill(255)
             line(xx, yy, xx2, yy2)
             
 def Lazers():
@@ -223,10 +223,10 @@ def Lazers():
                     fill(255)
 
         if closest_index > -1:
-            fill(255, 0, 0)
-            noStroke()
-            ellipse(closest_intersection[0], closest_intersection[1], 4, 4)
-            stroke(255)
+            # fill(255, 0, 0)
+            # noStroke()
+            # ellipse(closest_intersection[0], closest_intersection[1], 4, 4)
+            # stroke(255)
             remove_lazer_indexes.append(ii)
             parent = asteroids.pop(closest_index)
             origin, scaleing, lines = parent[asteroid_origin], parent[asteroid_scale], asteroid_types[parent[asteroid_type]][asteroid_type_lines]
@@ -275,7 +275,7 @@ def draw():
         on_sides = random.randint(0, 1) == 0
         originX = (minX if random.randint(0, 1) == 0 else maxX) if on_sides else random.randint(minX, maxX)
         originY = random.randint(minY, maxY) if on_sides else (minY if random.randint(0, 1) == 0 else maxY) 
-        xv, yv = -1 if random.randint(0, 1) == 0 else 1, -1 if random.randint(0, 1) == 0 else 1wwww
+        xv, yv = -1 if random.randint(0, 1) == 0 else 1, -1 if random.randint(0, 1) == 0 else 1
         CreateAsteroid(type, 1, [originX, originY], [60 * xv, 60 * yv])
         
         spawn_cooldown *= spawn_reduce

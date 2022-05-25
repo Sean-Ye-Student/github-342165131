@@ -1,12 +1,13 @@
 import time
 add_library("minim")
 import random
-rows = list([{"Plants" : [None for ii in range(9)], "Zombies" : []} for i in range(6)])
+rows = list([{"Plants" : [None for ii in range(9)], "Projectiles" : [], "Zombies" : []} for i in range(6)])
 column_pos = (80,183,279,385,467, 573) #The borders between rows from the very top to the very bottom
 row_pos = (251, 334, 408, 493, 576, 654, 738, 812, 898, 987) #The borders between columns from the very left to the very right
 spawn_pos_x = 1027
 
-zombies = {"Football" : {"image" : {"size" : {"x" : 154, "y" : 160}, "pos" : {"x" : spawn_pos_x, "y" : 0}, "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},"animation" : {"file_index" : "zombies/football/(", "file_type" : ").png", "start" : 0,"total_frames" : 11, "frame_duration" : 0.09}}, "Settings" : {"offset" : {"x" : 50, "y" : 0}, "speed" : 40, "last_moved" : time.time(), "last_attacked" : time.time(), "blocked" : False, "dps" : 3}},
+zombies = {"Football" : {"image" : {"size" : {"x" : 154, "y" : 160}, "pos" : {"x" : spawn_pos_x, "y" : 0}, "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},"animation" : {"file_index" : "zombies/football/(", "file_type" : ").png", "start" : 0,"total_frames" : 11, "frame_duration" : 0.09}}, 
+                         "Settings" : {"offset" : {"x" : 50, "y" : 0}, "speed" : 40, "last_moved" : time.time(), "last_attacked" : time.time(), "blocked" : False, "health" : 300, "dps" : 3}},
            "Dancer" : {"image" : {
                                     "size" : {"x" : 331, "y" : 498}, 
                                     "pos" : {"x" : spawn_pos_x, "y" : 0}, 
@@ -21,12 +22,24 @@ zombies = {"Football" : {"image" : {"size" : {"x" : 154, "y" : 160}, "pos" : {"x
                           "last_moved" : time.time(), 
                           "last_attacked" : time.time(), 
                           "blocked" : False, 
+                          "health" : 20,
                           "dps" : 1}}
            
            
            
            }
-plants = {"Wallnut" : {"image" : {"size" : {"x" : 148, "y" : 125},"pos" : {"x" : 0, "y" : 0},"fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, "animation" : {"file_index" : "plants/wallnut/(", "file_type" : ").png","start" : 0,"total_frames" : 17, "frame_duration" : 0.08}}, "Settings" : {"offset" : {"x" : 25, "y" : 0}, "health" : 5}}}    
+plants = {"Wallnut" : {"image" : {"size" : {"x" : 148, "y" : 125},"pos" : {"x" : 0, "y" : 0},"fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, "animation" : {"file_index" : "plants/wallnut/(", "file_type" : ").png","start" : 0,"total_frames" : 17, "frame_duration" : 0.08}}, "Settings" : {"offset" : {"x" : 25, "y" : 0}, "health" : 50}},
+          "Peashooter" : {
+                          "image" : {"size" : {"x" : 100, "y" : 100},
+                                     "pos" : {"x" : 0, "y" : 0},
+                                     "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, 
+                                     "animation" : {"file_index" : "plants/peashooter/(", "file_type" : ").png", "start" : 0,"total_frames" : 49, "frame_duration" : 0.03}}, 
+                          "Settings" : {"offset" : {"x" : 15, "y" : -30}, "reload_time" : 1.5, "last_shot" : 0, "projectile" : "pea", "amount" : 1, "health" : 5}}}    
+projectiles = {"pea" : {"image" : {"name" : "plants/projectiles/pea.png", "size" : {"x" : 21, "y" : 21}, "pos" : {"x" : 0, "y" : 0}},
+                    "Settings" : {"offset" : {"x" : 65, "y" : 30}, "start_x" : 0, "start" : time.time(), "speed" : 150, "damage" : 20}}
+               
+               
+               }
 sounds = {"intro" : {"minim" : "The_Zombies_Are_Coming.mp3", "repeat" : 1, "play_from_start" : True, "isolate" : True, "group" : 0}, "menu" : {"minim" : "Crazy Dave Intro Theme.mp3", "repeat" : -1, "play_from_start" : True, "isolate" : True,"group" : 0}, "game" : {"minim" : "Grasswalk (In-Game).mp3", "repeat" : -1, "play_from_start" : True, "isolate" : True, "group" : 0}}
            
 rect_kys = ("fill", "weight", "pos", "size", "stroke")
@@ -76,10 +89,9 @@ def RENDERIMAGE(object, enabled_keys): #object is a dictionary, enabled_keys is 
         
     if img_name == None:
         return
-    print(img_name)
+    
     tint(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), fallback(f, "a", 255))
     image(loadImage(img_name), fallback(pos, "x", 0), fallback(pos, "y", 0), fallback(img_size, "x", 100), fallback(img_size, "y", 100))   
-
 
 types = (type([]), type({}))
 def copycollection(coll):
@@ -114,42 +126,34 @@ def GetLocation(ax, ay):
                 return x, y
     return None, None
 
-def setup():
-    size(1000, 600)
-    minim = Minim(this)
-    for ky in sounds:
-        sounds[ky]["minim"] = minim.loadFile("sounds/" + sounds[ky]["minim"])
-    PlaySound("intro", ("minim", "repeat", "play_from_start", "isolate", "group"))
-cooldown = time.time()+1
-start_music = time.time() + 4
-def draw():    
-    global rows, cooldown
-    if time.time() >= cooldown:        
-        Spawn(zombies["Football"], random.randint(0,4), None, True)
-        cooldown = time.time() + 1
-        
-    if start_music <= time.time():    # if mousePressed:
-        PlaySound("game", ("minim", "repeat", "play_from_start", "isolate", "group"))    #     print(mouseX, mouseY)
-
-    copy(loadImage("Lawn.png"), 0, 0, 1400, 600, 0, 0, 1400, 600)
-    x, y = GetLocation(mouseX, mouseY)
-    if x != None and y != None:
-        noStroke()
-        fill(255, 255, 255, 125)
-        rect(row_pos[x], column_pos[y], row_pos[x + 1] - row_pos[x], column_pos[y + 1] - column_pos[y])
-        
-        if mousePressed and mouseButton == LEFT and can_place(x, y):
-            Spawn(plants["Wallnut"], y, x, False)
-    for i, row in enumerate(rows):
-        for ii, plant in enumerate(row["Plants"]):
+def Plants(i, row):
+    global rows
+    for ii, plant in enumerate(row["Plants"]):
             if not(plant):
                 continue
             settingp, imagp  = plant["Settings"], plant["image"]
             imagp["pos"]["y"] = column_pos[i + 1] + settingp["offset"]["y"] - imagp["size"]["y"]
             imagp["pos"]["x"] = row_pos[ii+1] + settingp["offset"]["x"] - imagp["size"]["x"]
-            RENDERIMAGE(plant, ("animation", "pos", "size", "fill"))
+            if time.time() >= settingp["last_shot"] + settingp["reload_time"]:
+                settingp["last_shot"] = time.time()
+                new_projectile = copycollection(projectiles[settingp["projectile"]])
+                new_settings, new_image = new_projectile["Settings"], new_projectile["image"]
+                new_settings["start"] = time.time()
+                new_settings["start_x"], new_image["pos"]["y"]  = imagp["pos"]["x"] + new_settings["offset"]["x"], imagp["pos"]["y"] + new_settings["offset"]["y"]
+                rows[i]["Projectiles"].append(new_projectile)
             
-        for ii, zombie in enumerate(row["Zombies"]):    
+            RENDERIMAGE(plant, ("animation", "pos", "size", "fill"))
+
+def Zombies(i, row):
+    global rows
+    index = 0
+    while index < len(row["Zombies"]):
+        if row["Zombies"][index]["Settings"]["health"] <= 0:
+            row["Zombies"].pop(index)
+        else: 
+            index += 1
+    
+    for ii, zombie in enumerate(row["Zombies"]):    
             settingz, imagz = zombie["Settings"], zombie["image"]
             imagz["pos"]["y"] = column_pos[i + 1] + settingz["offset"]["y"] - imagz["size"]["y"]
             elapsed = time.time() - settingz["last_moved"]
@@ -167,3 +171,79 @@ def draw():
                     rows[y]["Plants"][x] = None
             settingz["last_attacked"] = time.time()
             RENDERIMAGE(zombie, ("animation", "pos", "size", "fill"))
+
+def Projectiles(i, row):
+    global rows
+    remove_indexes = []
+    for i, projectile in enumerate(row["Projectiles"]):
+            setting, imagp = projectile["Settings"], projectile["image"]
+            imagp["pos"]["x"] = setting["start_x"] + (time.time() - setting["start"]) * setting["speed"]
+            
+            closest_setting, closest = None, 10**6
+            for zombie in row["Zombies"]:
+                settingz, imagz = zombie["Settings"], zombie["image"]
+                if setting["start_x"] <= zombie["image"]["pos"]["x"] + settingz["offset"]["x"] <= imagp["pos"]["x"]:
+                    closest_setting = settingz
+                    print(closest_setting, "chosen_health")
+                    closest = zombie["image"]["pos"]["x"] + settingz["offset"]["x"] - setting["start_x"]
+            if closest_setting != None:
+                remove_indexes.append(i)
+                closest_setting["health"] -= setting["damage"]
+            RENDERIMAGE(projectile, ("name", "size", "pos"))
+            
+    index, r = 0, 0
+    while len(remove_indexes) > 0:
+        if index + r == remove_indexes[0]:
+            row["Projectiles"].pop(index)
+            remove_indexes.pop(0)
+            r += 1
+        else:
+            index += 1
+def setup():
+    size(1000, 600)
+    minim = Minim(this)
+    for ky in sounds:
+        sounds[ky]["minim"] = minim.loadFile("sounds/" + sounds[ky]["minim"])
+    PlaySound("intro", ("minim", "repeat", "play_from_start", "isolate", "group"))
+    #Spawn(zombies["Football"], 0, None, True)
+cooldown = time.time()+1
+start_music = time.time() + 4
+projectile_removed = time.time()
+projectile_remove_cooldown = 10
+def draw():   
+    #print(frameRate) 
+    global rows, cooldown, projectile_removed
+    if time.time() >= cooldown:        
+        Spawn(zombies["Football"], random.randint(0,4), None, True)
+        cooldown = time.time() + 1
+    
+    if time.time() >= projectile_removed + projectile_remove_cooldown:
+        projectile_removed = time.time()
+        for row in rows:
+            i = 0
+            while i < len(row["Projectiles"]):
+                if row["Projectiles"][i]["image"]["pos"]["x"] > width:
+                    row["Projectiles"].pop(i)
+                else:
+                    i += 1 
+                    
+    if start_music <= time.time():    # if mousePressed:
+        PlaySound("game", ("minim", "repeat", "play_from_start", "isolate", "group"))    #     print(mouseX, mouseY)
+
+    copy(loadImage("Lawn.png"), 0, 0, 1400, 600, 0, 0, 1400, 600)
+    x, y = GetLocation(mouseX, mouseY)
+    if x != None and y != None:
+        noStroke()
+        fill(255, 255, 255, 125)
+        rect(row_pos[x], column_pos[y], row_pos[x + 1] - row_pos[x], column_pos[y + 1] - column_pos[y])
+        
+        if mousePressed and mouseButton == LEFT and can_place(x, y):
+            Spawn(plants["Peashooter"], y, x, False) 
+    for i, row in enumerate(rows):
+        Plants(i, row)
+        Zombies(i, row)
+        Projectiles(i, row)
+        
+        
+            
+        
