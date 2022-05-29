@@ -6,10 +6,11 @@ column_pos = (80,183,279,385,467, 573) #The borders between rows from the very t
 row_pos = (251, 334, 408, 493, 576, 654, 738, 812, 898, 987) #The borders between columns from the very left to the very right
 spawn_pos_x = 1027
 
-zombies = {"Football" : {"image" : {"size" : {"x" : 154, "y" : 160}, "pos" : {"x" : spawn_pos_x, "y" : 0}, "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},"animation" : {"file_index" : "zombies/football/(", "file_type" : ").png", "start" : 0,"total_frames" : 11, "frame_duration" : 0.09}}, 
-                         "Settings" : {"offset" : {"x" : 50, "y" : 0}, "speed" : 40, "last_moved" : time.time(), "last_attacked" : time.time(), "blocked" : False, "health" : 300, "dps" : 3}},
+zombies = {"Football" : {"image" : { "name" : "football", "size" : {"x" : 154, "y" : 160}, "pos" : {"x" : spawn_pos_x, "y" : 0}, "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},"animation" : {"file_index" : "zombies/football/(", "file_type" : ").png", "start" : 0,"total_frames" : 11, "frame_duration" : 0.09}}, 
+                         "Settings" : {"offset" : {"x" : 50, "y" : 0}, "speed" : 40, "last_moved" : time.time(), "last_attacked" : time.time(), "blocked" : False, "health" : 60, "dps" : 3}},
            "Dancer" : {"image" : {
-                                    "size" : {"x" : 331, "y" : 498}, 
+                                    "name" : "dancer",
+                                    "size" : {"x" : 83, "y" : 125}, 
                                     "pos" : {"x" : spawn_pos_x, "y" : 0}, 
                                     "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255},
                                     "animation" : {"file_index" : "zombies/dancer/(", 
@@ -17,13 +18,13 @@ zombies = {"Football" : {"image" : {"size" : {"x" : 154, "y" : 160}, "pos" : {"x
                                                    "start" : 0,
                                                    "total_frames" : 34, 
                                                    "frame_duration" : 0.1}}, 
-            "Settings" : {"offset" : {"x" : 0, "y" : 0}, 
-                          "speed" : 15, 
-                          "last_moved" : time.time(), 
-                          "last_attacked" : time.time(), 
-                          "blocked" : False, 
-                          "health" : 20,
-                          "dps" : 1}}
+                                    "Settings" : {"offset" : {"x" : 25, "y" : 0}, 
+                                                "speed" : 15, 
+                                                "last_moved" : time.time(), 
+                                                "last_attacked" : time.time(), 
+                                                "blocked" : False, 
+                                                "health" : 20,
+                                                "dps" : 1}}
            
            
            
@@ -34,7 +35,22 @@ plants = {"Wallnut" : {"image" : {"size" : {"x" : 148, "y" : 125},"pos" : {"x" :
                                      "pos" : {"x" : 0, "y" : 0},
                                      "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, 
                                      "animation" : {"file_index" : "plants/peashooter/(", "file_type" : ").png", "start" : 0,"total_frames" : 49, "frame_duration" : 0.03}}, 
-                          "Settings" : {"offset" : {"x" : 15, "y" : -30}, "reload_time" : 1.5, "last_shot" : 0, "projectile" : "pea", "amount" : 1, "health" : 5}}}    
+                          "Settings" : {"offset" : {"x" : 15, "y" : -30}, "reload_time" : 1.5, "last_shot" : 0, "projectile" : "pea", "amount" : 1, "health" : 5}},
+          "Sunflower" : {
+                          "image" : {"size" : {"x" : 100, "y" : 106},
+                                     "pos" : {"x" : 0, "y" : 0},
+                                     "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}, 
+                                     "animation" : {"file_index" : "plants/sunflower/(", "file_type" : ").png", "start" : 0,"total_frames" : 54, "frame_duration" : 0.03}}, 
+                          "Settings" : {"offset" : {"x" : 0, "y" : -30}, "amount" : 1, "health" : 5}}
+        }
+move_set = {}
+def keyPressed():
+    global move_set
+    move_set[key] = True
+def keyReleased():
+    global move_set
+    move_set[key] = False
+
 projectiles = {"pea" : {"image" : {"name" : "plants/projectiles/pea.png", "size" : {"x" : 21, "y" : 21}, "pos" : {"x" : 0, "y" : 0}},
                     "Settings" : {"offset" : {"x" : 65, "y" : 30}, "start_x" : 0, "start" : time.time(), "speed" : 150, "damage" : 20}}
                
@@ -52,6 +68,71 @@ def RENDERRECT(object, enabled_keys):
     fill(fallback(f, "r", 255), fallback(f, "g", 255), fallback(f, "b", 255), fallback(f, "a", 255)) 
     stroke(fallback(st, "r", 255), fallback(st, "g", 255), fallback(st, "b", 255), fallback(st, "a", 255))
     rect(fallback(p, "x", 0), fallback(p, "y", 0), fallback(s, "x", 0), fallback(s, "y", 0))
+plant_selected = None
+def SELECTPLANT(name):
+    global plant_selected
+    print(name)
+    plant_selected = name
+    
+
+def SELECTPEASHOOTER():
+    SELECTPLANT("Peashooter")
+def SELECTWALLNUT():
+    SELECTPLANT("Wallnut")
+def SELECTSUNFLOWER():
+    SELECTPLANT("Sunflower")
+
+
+buttons = [
+           {"button" : {
+    "mouse" : LEFT,
+    "function" : SELECTPEASHOOTER,
+    "area" : {"pos" : {"x" : 10, "y" : 0}, "pos2" : {"x" : 116, "y" : 66}}},
+    
+    "image" : {"name" : "icons/peashooter.png",
+               "size" : {"x" : 106, "y" : 66},
+                "pos" : {"x" : 10, "y" : 0},
+                "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}
+    }},
+           
+           
+      {"button" : {
+    "mouse" : LEFT,
+    "function" : SELECTWALLNUT,
+    "area" : {"pos" : {"x" : 10, "y" : 80}, "pos2" : {"x" : 116, "y" : 146}}},
+    
+    "image" : {"name" : "icons/wallnut.png",
+               "size" : {"x" : 106, "y" : 66},
+                "pos" : {"x" : 10, "y" : 80},
+                "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}
+    }},
+      
+    {"button" : {
+    "mouse" : LEFT,
+    "function" : SELECTSUNFLOWER,
+    "area" : {"pos" : {"x" : 10, "y" : 160}, "pos2" : {"x" : 116, "y" : 246}}},
+    
+    "image" : {"name" : "icons/sunflower.png",
+               "size" : {"x" : 106, "y" : 66},
+                "pos" : {"x" : 10, "y" : 160},
+                "fill" : {"r" : 255, "g" : 255, "b" : 255, "a" : 255}
+    }}
+           ]
+
+
+
+button_kys = ("area", "function", "mouse")
+fallback = lambda dic, ky, default: dic[ky] if dic != None else default
+def mousePressed():
+    for object in buttons:
+        button = object["button"]
+        a, f, m = fallback(button, "area", None), fallback(button, "function", None), fallback(button, "mouse", None)
+        p, p2 = fallback(a, "pos", None), fallback(a, "pos2", None)
+        x, y, x2, y2 = fallback(p, "x", 0), fallback(p, "y", 0), fallback(p2, "x", 0), fallback(p2, "y", 0)
+        if min(x, x2) <= mouseX <= max(x, x2) and min(y, y2) <= mouseY <= max(y, y2):
+            if f != None and mouseButton == m:
+                f()
+
 
 
 sound_kys = ("minim", "repeat", "play_from_start", "isolate", "group")
@@ -134,7 +215,7 @@ def Plants(i, row):
             settingp, imagp  = plant["Settings"], plant["image"]
             imagp["pos"]["y"] = column_pos[i + 1] + settingp["offset"]["y"] - imagp["size"]["y"]
             imagp["pos"]["x"] = row_pos[ii+1] + settingp["offset"]["x"] - imagp["size"]["x"]
-            if time.time() >= settingp["last_shot"] + settingp["reload_time"]:
+            if "last_shot" in settingp.keys() and time.time() >= settingp["last_shot"] + settingp["reload_time"]:
                 settingp["last_shot"] = time.time()
                 new_projectile = copycollection(projectiles[settingp["projectile"]])
                 new_settings, new_image = new_projectile["Settings"], new_projectile["image"]
@@ -163,7 +244,7 @@ def Zombies(i, row):
             settingz["blocked"] = True if target_plant != None else False
             if not(settingz["blocked"]):
                 imagz["pos"]["x"] -= settingz["speed"] * elapsed        
-            imagz["animation"]["file_index"] =  "zombies/football/(" if not(settingz["blocked"]) else "zombies/footballeat/("
+            imagz["animation"]["file_index"] =  "zombies/" + imagz["name"] +"/(" if not(settingz["blocked"]) else "zombies/" + imagz["name"] + "eat/("
             
             if target_plant != None:
                 target_plant["Settings"]["health"] -= (time.time() - settingz["last_attacked"]) * settingz["dps"]
@@ -182,10 +263,10 @@ def Projectiles(i, row):
             closest_setting, closest = None, 10**6
             for zombie in row["Zombies"]:
                 settingz, imagz = zombie["Settings"], zombie["image"]
-                if setting["start_x"] <= zombie["image"]["pos"]["x"] + settingz["offset"]["x"] <= imagp["pos"]["x"]:
+                #setting["start_x"] <= zombie["image"]["pos"]["x"] + settingz["offset"]["x"] <= imagp["pos"]["x"]
+                if setting["start_x"] <= zombie["image"]["pos"]["x"] <= imagp["pos"]["x"]:
                     closest_setting = settingz
-                    print(closest_setting, "chosen_health")
-                    closest = zombie["image"]["pos"]["x"] + settingz["offset"]["x"] - setting["start_x"]
+                    closest = zombie["image"]["pos"]["x"] + settingz["offset"]["x"] - setting["start_x"] #zombie["image"]["pos"]["x"] + settingz["offset"]["x"] - setting["start_x"]
             if closest_setting != None:
                 remove_indexes.append(i)
                 closest_setting["health"] -= setting["damage"]
@@ -212,9 +293,10 @@ projectile_removed = time.time()
 projectile_remove_cooldown = 10
 def draw():   
     #print(frameRate) 
-    global rows, cooldown, projectile_removed
+    global rows, cooldown, projectile_removed, move_set, plant_selected
     if time.time() >= cooldown:        
-        Spawn(zombies["Football"], random.randint(0,4), None, True)
+        options = tuple(zombies.keys())
+        Spawn(zombies[options[random.randint(0, len(options) - 1)]], random.randint(0,4), None, True)
         cooldown = time.time() + 1
     
     if time.time() >= projectile_removed + projectile_remove_cooldown:
@@ -238,7 +320,12 @@ def draw():
         rect(row_pos[x], column_pos[y], row_pos[x + 1] - row_pos[x], column_pos[y + 1] - column_pos[y])
         
         if mousePressed and mouseButton == LEFT and can_place(x, y):
-            Spawn(plants["Peashooter"], y, x, False) 
+            if plant_selected != None:
+                Spawn(plants[plant_selected], y, x, False) 
+            
+    for object in buttons:
+        RENDERIMAGE(object, ("name", "fill", "size", "pos"))        
+    
     for i, row in enumerate(rows):
         Plants(i, row)
         Zombies(i, row)
